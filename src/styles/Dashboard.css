@@ -1,0 +1,15 @@
+.dashboard-container {
+  padding: 24px;
+}
+
+.dashboard-container h1 {
+  margin-bottom: 24px;
+}
+
+.dashboard-container h2 {
+  margin-bottom: 16px;
+}
+
+.sales-overview-card {
+  margin-top: 24px;
+} 

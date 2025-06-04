@@ -15,8 +15,7 @@ import {
   TimePicker,
   Space,
   Tabs,
-  Upload,
-  Avatar
+  Upload
 } from 'antd';
 import { 
   SaveOutlined, 
@@ -31,6 +30,7 @@ import {
   PrinterOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import '../styles/Settings.css';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -64,11 +64,11 @@ const Settings = () => {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="settings-container">
       <Card>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <Title level={2} style={{ marginBottom: '8px' }}>
-            <SettingOutlined style={{ marginRight: '8px' }} />
+        <div className="settings-header">
+          <Title level={2} className="settings-title">
+            <SettingOutlined />
             Shop Settings
           </Title>
           <Text type="secondary">Manage your shop's configuration and preferences</Text>
@@ -139,9 +139,9 @@ const Settings = () => {
                   maxCount={1}
                   beforeUpload={() => false}
                 >
-                  <div>
+                  <div className="logo-upload">
                     <UploadOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
+                    <div>Upload</div>
                   </div>
                 </Upload>
               </Form.Item>
@@ -157,17 +157,17 @@ const Settings = () => {
             } 
             key="2"
           >
-            <Form.Item label="Business Hours" style={{ marginBottom: 24 }}>
+            <Form.Item label="Business Hours" className="business-hours-form-item">
               {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
                 <Form.Item
                   key={day}
                   name={['businessHours', day]}
                   label={day.charAt(0).toUpperCase() + day.slice(1)}
-                  style={{ marginBottom: 16 }}
+                  className="business-hours-day-item"
                 >
                   <TimePicker.RangePicker 
                     format="HH:mm"
-                    style={{ width: '100%' }}
+                    className="time-picker"
                     disabled={day === 'sunday'}
                   />
                 </Form.Item>
@@ -194,7 +194,7 @@ const Settings = () => {
                   <InputNumber 
                     min={0} 
                     max={100} 
-                    style={{ width: '100%' }}
+                    className="tax-input"
                     prefix="%"
                   />
                 </Form.Item>
@@ -256,7 +256,7 @@ const Settings = () => {
 
         <Divider />
 
-        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+        <div className="settings-actions">
           <Space>
             <Button
               type="primary"

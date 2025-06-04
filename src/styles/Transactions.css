@@ -1,0 +1,44 @@
+.transactions-container {
+  padding: 24px;
+}
+
+.transactions-header {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-range-picker {
+  width: 300px;
+}
+
+.transaction-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.transaction-items li {
+  margin-bottom: 4px;
+}
+
+.transaction-items li:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .transactions-container {
+    padding: 16px;
+  }
+
+  .transactions-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .date-range-picker {
+    width: 100%;
+  }
+} 

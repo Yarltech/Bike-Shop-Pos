@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Button, Input, Table, Typography, Space, Divider } from 'antd';
 import { SearchOutlined, DeleteOutlined, PrinterOutlined } from '@ant-design/icons';
+import '../styles/POS.css';
 
 const { Title } = Typography;
 
@@ -119,7 +120,7 @@ const POS = () => {
   const total = subtotal + tax;
 
   return (
-    <div style={{ padding: '16px' }}>
+    <div className="pos-container">
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={14}>
           <Card>
@@ -128,7 +129,7 @@ const POS = () => {
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              style={{ marginBottom: '16px' }}
+              className="search-input"
             />
             <Row gutter={[8, 8]}>
               {filteredProducts.map(product => (
@@ -136,15 +137,10 @@ const POS = () => {
                   <Card
                     hoverable
                     onClick={() => addToCart(product)}
-                    style={{ 
-                      textAlign: 'center',
-                      cursor: 'pointer',
-                      height: '100%',
-                    }}
-                    bodyStyle={{ padding: '12px' }}
+                    className="product-card"
                   >
-                    <Title level={5} style={{ marginBottom: '8px' }}>{product.name}</Title>
-                    <p style={{ margin: 0 }}>{formatCurrency(product.price)}</p>
+                    <Title level={5} className="product-title">{product.name}</Title>
+                    <p className="product-price">{formatCurrency(product.price)}</p>
                   </Card>
                 </Col>
               ))}
@@ -154,17 +150,16 @@ const POS = () => {
         <Col xs={24} lg={10}>
           <Card>
             <Title level={4}>Current Order</Title>
-            <div style={{ /* overflowX: 'auto' */ }}>
+            <div>
               <Table
                 dataSource={cart}
                 columns={cartColumns}
                 pagination={false}
                 rowKey="id"
-                /* scroll={{ x: 'max-content' }} */
               />
             </div>
             <Divider />
-            <div style={{ textAlign: 'right' }}>
+            <div className="order-summary">
               <p>Subtotal: {formatCurrency(subtotal)}</p>
               <p>Tax (15%): {formatCurrency(tax)}</p>
               <Title level={4}>Total: {formatCurrency(total)}</Title>
@@ -173,7 +168,7 @@ const POS = () => {
               type="primary"
               block
               icon={<PrinterOutlined />}
-              style={{ marginTop: '16px' }}
+              className="proceed-button"
             >
               Proceed
             </Button>

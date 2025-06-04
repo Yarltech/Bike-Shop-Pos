@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal, Form, Input, InputNumber, Space, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import '../styles/Products.css';
 
 const Products = () => {
   const [products, setProducts] = useState([
@@ -87,8 +88,8 @@ const Products = () => {
   };
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="products-container">
+      <div className="products-header">
         <h1>Products</h1>
         <Button
           type="primary"
@@ -131,7 +132,7 @@ const Products = () => {
             <InputNumber
               min={0}
               step={0.01}
-              style={{ width: '100%' }}
+              className="price-input"
               prefix="$"
             />
           </Form.Item>
@@ -140,7 +141,7 @@ const Products = () => {
             label="Stock"
             rules={[{ required: true, message: 'Please enter stock quantity' }]}
           >
-            <InputNumber min={0} style={{ width: '100%' }} />
+            <InputNumber min={0} className="stock-input" />
           </Form.Item>
           <Form.Item
             name="category"

@@ -1,0 +1,157 @@
+.main-layout {
+  min-height: 100vh;
+}
+
+.sider {
+  overflow: hidden;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-container {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.main-menu {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 50px;
+}
+
+.logout-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.logout-menu {
+  width: 100%;
+}
+
+.content-layout {
+  margin-left: 0;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.content-layout.expanded {
+  margin-left: 200px;
+}
+
+.header {
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.menu-button {
+  font-size: 16px;
+  width: 64px;
+  height: 64px;
+  color: #000;
+  margin-left: 0;
+  transition: margin-left 0.2s, background 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+}
+
+.menu-button:focus,
+.menu-button:active,
+.menu-button:focus-visible {
+  background: #e6f7ff !important;
+  box-shadow: 0 0 0 2px #1890ff33;
+  outline: none;
+}
+
+.menu-button:hover {
+  background: #f0f5ff;
+}
+
+.menu-button.expanded {
+  margin-left: 0;
+}
+
+.datetime-container {
+  margin-left: auto;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.date-text {
+  color: #000;
+  margin-right: 16px;
+}
+
+.time-text {
+  color: #000;
+}
+
+.content {
+  margin: 24px 16px;
+  padding: 24px;
+  min-height: 280px;
+  overflow: auto;
+}
+
+@media (max-width: 768px) {
+  .content-layout.expanded {
+    margin-left: 0;
+  }
+
+  .sider {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sider.expanded {
+    transform: translateX(0);
+  }
+
+  .content {
+    margin: 16px 8px;
+    padding: 16px;
+  }
+
+  .header {
+    padding: 0 8px;
+    min-height: 56px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .datetime-container {
+    display: none;
+  }
+
+  .menu-button {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+} 
