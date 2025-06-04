@@ -13,7 +13,6 @@ import {
   Col, 
   Typography,
   TimePicker,
-  Space,
   Tabs,
   Upload
 } from 'antd';
