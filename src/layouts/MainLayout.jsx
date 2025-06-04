@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, theme, Typography, Space } from 'antd';
+import { Layout, Menu, Button, theme, Typography } from 'antd';
 import {
   DashboardOutlined,
   ShoppingCartOutlined,
@@ -13,6 +13,7 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import '../styles/MainLayout.css';
 
 dayjs.extend(customParseFormat);
 
@@ -100,114 +101,47 @@ const MainLayout = ({ children }) => {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout className="main-layout">
       <Sider
         trigger={null}
         collapsible
         collapsed={collapsed}
         breakpoint="lg"
         collapsedWidth={isMobile ? 0 : 80}
-        style={{
-          overflow: 'hidden', // Hide default scrollbar as we'll manage scrolling on the menu
-          height: '100vh',
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 1000,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        className="sider"
       >
-        <div
-          style={{
-            height: '32px',
-            margin: '16px',
-            background: 'rgba(255, 255, 255, 0.2)',
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            flexShrink: 0,
-          }}
-        >
-          {!collapsed && 'Bike Shop POS'}
+        <div className="logo-container">
+          {!collapsed && 'Zed_X'}
         </div>
         <Menu
           theme="dark"
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems.slice(0, -2)}
-          style={{ flex: 1, overflowY: 'auto', marginBottom: '50px' }} // Add bottom margin to prevent overlap with logout button
+          className="main-menu"
         />
-        {/* Absolutely positioned container for the logout menu */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            width: '100%',
-            paddingBottom: '10px', // Add some padding at the very bottom
-          }}
-        >
-           <Menu
+        <div className="logout-container">
+          <Menu
             theme="dark"
             mode="inline"
             selectedKeys={[]}
             items={menuItems.slice(-2)}
-            style={{ width: '100%' }} // Ensure menu takes full width of its container
+            className="logout-menu"
           />
         </div>
       </Sider>
-      <Layout style={{ 
-        marginLeft: collapsed ? 0 : (isMobile ? 0 : 200),
-        transition: 'all 0.2s',
-        width: '100%',
-      }}>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-            position: 'sticky',
-            top: 0,
-            zIndex: 999,
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64,
-              color: '#000', 
-              marginLeft: collapsed ? 80 : 0, 
-              transition: 'margin-left 0.2s', 
-            }}
-          />
-          <div style={{ marginLeft: 'auto', marginRight: '16px', display: 'flex', alignItems: 'center' }}>
-            <Text style={{ color: '#000', marginRight: '16px' }}>{currentDateTime.format('DD MMMM YYYY')}</Text>
-            <Text strong style={{ color: '#000' }}>{currentDateTime.format('h:mm:ss A')}</Text>
+      <Layout className={`content-layout ${!collapsed && !isMobile ? 'expanded' : ''}`}>
+        <Header className="header" style={{ background: colorBgContainer }}>
+          <div className="datetime-container">
+            <Text className="date-text">{currentDateTime.format('DD MMMM YYYY')}</Text>
+            <Text strong className="time-text">{currentDateTime.format('h:mm:ss A')}</Text>
           </div>
         </Header>
         <Content
+          className="content"
           style={{
-            margin: '24px 16px',
-            padding: 24,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
-            minHeight: 280,
-            overflow: 'auto',
           }}
         >
           {children}

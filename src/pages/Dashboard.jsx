@@ -1,7 +1,13 @@
 import React from 'react';
-import { Card, Row, Col, Statistic } from 'antd';
-import { DollarOutlined, ToolOutlined, ClockCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Row, Col, Statistic, Card } from 'antd';
+import { 
+  DollarOutlined, 
+  ToolOutlined, 
+  ClockCircleOutlined, 
+  CheckCircleOutlined 
+} from '@ant-design/icons';
 import { Line } from '@ant-design/plots';
+import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   // Sample data for the line chart
@@ -29,7 +35,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container" style={{ padding: '24px' }}>
+    <div className="dashboard-container">
       <h1>Dashboard</h1>
       
       <Row gutter={[16, 16]}>
@@ -75,7 +81,7 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      <Card style={{ marginTop: '24px' }}>
+      <Card className="sales-overview-card">
         <h2>Sales Overview</h2>
         <Line {...config} />
       </Card>

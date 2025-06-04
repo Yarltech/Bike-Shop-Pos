@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Card, DatePicker, Space, Button, Tag } from 'antd';
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
+import '../styles/Transactions.css';
 
 const { RangePicker } = DatePicker;
 
@@ -45,7 +46,7 @@ const Transactions = () => {
       dataIndex: 'items',
       key: 'items',
       render: (items) => (
-        <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+        <ul className="transaction-items">
           {items.map((item, index) => (
             <li key={index}>
               {item.quantity}x {item.name} (${item.price.toFixed(2)})
@@ -104,14 +105,14 @@ const Transactions = () => {
     : transactions;
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="transactions-container">
       <Card>
-        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="transactions-header">
           <h1>Transactions</h1>
           <Space>
             <RangePicker
               onChange={setDateRange}
-              style={{ width: '300px' }}
+              className="date-range-picker"
             />
             <Button
               type="primary"
