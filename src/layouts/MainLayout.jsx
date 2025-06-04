@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, theme, Typography } from 'antd';
+import { Layout, Menu, theme, Typography } from 'antd';
 import {
   DashboardOutlined,
   ShoppingCartOutlined,
   SettingOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   ToolOutlined,
   HistoryOutlined,
   LogoutOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -64,9 +64,9 @@ const MainLayout = ({ children }) => {
 
   const menuItems = [
     {
-      key: '/',
+      key: '/dashboard',
       icon: <DashboardOutlined />,
-      label: <Link to="/">Dashboard</Link>,
+      label: <Link to="/dashboard">Dashboard</Link>,
     },
     {
       key: '/pos',
@@ -132,6 +132,13 @@ const MainLayout = ({ children }) => {
       </Sider>
       <Layout className={`content-layout ${!collapsed && !isMobile ? 'expanded' : ''}`}>
         <Header className="header" style={{ background: colorBgContainer }}>
+          <span
+            className="menu-toggle-btn"
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ cursor: 'pointer', fontSize: 20, marginLeft: 16, marginRight: 24 }}
+          >
+            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          </span>
           <div className="datetime-container">
             <Text className="date-text">{currentDateTime.format('DD MMMM YYYY')}</Text>
             <Text strong className="time-text">{currentDateTime.format('h:mm:ss A')}</Text>

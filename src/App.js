@@ -8,6 +8,7 @@ import Products from './pages/Products';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
 import SignIn from './pages/SignIn';
+import ForgotPassword from './pages/ForgotPassword';
 
 // A simple authentication check (replace with your actual auth logic)
 const isAuthenticated = () => {
@@ -36,17 +37,20 @@ function App() {
         <Routes>
           {/* Public route for Sign-in */}
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Protected routes */}
-          <Route path="/" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
           <Route path="/pos" element={<ProtectedRoute><MainLayout><POS /></MainLayout></ProtectedRoute>} />
           <Route path="/products" element={<ProtectedRoute><MainLayout><Products /></MainLayout></ProtectedRoute>} />
           <Route path="/transactions" element={<ProtectedRoute><MainLayout><Transactions /></MainLayout></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
 
-          {/* Redirect to sign-in if no routes match and not authenticated, otherwise redirect to dashboard */}
-          <Route path="*" element={isAuthenticated() ? <Navigate to="/" /> : <Navigate to="/signin" />} />
+          {/* Redirect root to sign-in */}
+          <Route path="/" element={<Navigate to="/signin" replace />} />
 
+          {/* Redirect to sign-in if no routes match */}
+          <Route path="*" element={<Navigate to="/signin" replace />} />
         </Routes>
       </Router>
     </ConfigProvider>

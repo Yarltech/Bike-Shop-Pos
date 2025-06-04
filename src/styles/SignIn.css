@@ -47,15 +47,18 @@
 }
 
 .logo-container {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 30px;
   position: relative;
 }
 
 .logo-icon {
-  font-size: 48px;
+  margin-right: 12px;
+  font-size: 36px;
   color: #1890ff;
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .logo-container .ant-typography {
@@ -111,7 +114,7 @@
   }
 
   .logo-icon {
-    font-size: 36px;
+    font-size: 28px;
   }
 
   .styled-input,

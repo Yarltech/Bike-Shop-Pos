@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, Typography, notification } from 'antd';
-import { UserOutlined, LockOutlined, ToolOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import '../styles/SignIn.css';
 
 const { Title, Text } = Typography;
@@ -10,6 +12,7 @@ const { Title, Text } = Typography;
 const SignIn = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onFinish = async (values) => {
     setIsLoading(true);
@@ -24,7 +27,7 @@ const SignIn = () => {
           placement: 'topRight',
         });
         localStorage.setItem('isAuthenticated', 'true');
-        navigate('/');
+        navigate('/dashboard');
       } else {
         notification.error({
           message: 'Login Failed',
@@ -52,23 +55,11 @@ const SignIn = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <motion.div
-              className="logo-icon"
-              initial={{ rotate: -180 }}
-              animate={{ rotate: 0 }}
-              transition={{ duration: 0.8, type: "spring" }}
-            >
-              <ToolOutlined />
-            </motion.div>
-            <Title level={2} style={{ margin: 0 }}>Zed_X Automotive</Title>
+            <Title level={2} style={{ margin: 0, fontSize: '1.5rem' }}>SignIn</Title>
           </motion.div>
 
           <Form
             name="normal_login"
-            initialValues={{
-              username: 'admin',
-              password: 'password',
-            }}
             onFinish={onFinish}
             layout="vertical"
           >
@@ -78,7 +69,7 @@ const SignIn = () => {
             >
               <Input 
                 prefix={<UserOutlined className="site-form-item-icon" />} 
-                placeholder="Username"
+                placeholder="Enter user name"
                 size="large"
                 className="styled-input"
               />
@@ -89,12 +80,27 @@ const SignIn = () => {
             >
               <Input
                 prefix={<LockOutlined className="site-form-item-icon" />}
-                type="password"
-                placeholder="Password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter password"
                 size="large"
                 className="styled-input"
+                suffix={
+                  <FontAwesomeIcon
+                    icon={showPassword ? faEyeSlash : faEye}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  />
+                }
               />
             </Form.Item>
+            <div style={{ textAlign: 'right', marginBottom: 16 }}>
+              <Typography.Link
+                onClick={() => navigate('/forgot-password')}
+                style={{ fontSize: '1rem' }}
+              >
+                Forgot Password?
+              </Typography.Link>
+            </div>
 
             <Form.Item>
               <Button 
@@ -103,6 +109,7 @@ const SignIn = () => {
                 size="large"
                 loading={isLoading}
                 className="styled-button"
+                style={{ width: '100%' }}
               >
                 Sign In
               </Button>
