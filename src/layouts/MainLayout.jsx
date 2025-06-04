@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, theme, Typography } from 'antd';
+import { Layout, Menu, theme, Typography, Drawer } from 'antd';
 import {
   DashboardOutlined,
   ShoppingCartOutlined,
@@ -23,6 +23,7 @@ const { Text } = Typography;
 const MainLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(dayjs()); // State for current date and time
   const location = useLocation();
   const navigate = useNavigate(); // Initialize useNavigate
@@ -41,8 +42,8 @@ const MainLayout = ({ children }) => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth <= 768) {
         setCollapsed(true);
       } else {
         // Keep sidebar open on larger screens if not explicitly collapsed
@@ -102,42 +103,70 @@ const MainLayout = ({ children }) => {
 
   return (
     <Layout className="main-layout">
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        breakpoint="lg"
-        collapsedWidth={isMobile ? 0 : 80}
-        className="sider"
-      >
-        <div className="logo-container">
-          {!collapsed && 'Zed_X'}
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems.slice(0, -2)}
-          className="main-menu"
-        />
-        <div className="logout-container">
+      {/* Desktop Sider */}
+      {!isMobile && (
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          breakpoint="lg"
+          collapsedWidth={80}
+          className="sider"
+        >
+          <div className="logo-container">
+            {!collapsed && 'Zed_X'}
+          </div>
           <Menu
             theme="dark"
             mode="inline"
-            selectedKeys={[]}
-            items={menuItems.slice(-2)}
-            className="logout-menu"
+            selectedKeys={[location.pathname]}
+            items={menuItems.slice(0, -2)}
+            className="main-menu"
           />
-        </div>
-      </Sider>
+          <div className="logout-container">
+            <Menu
+              theme="dark"
+              mode="inline"
+              selectedKeys={[]}
+              items={menuItems.slice(-2)}
+              className="logout-menu"
+            />
+          </div>
+        </Sider>
+      )}
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <Drawer
+          title="Menu"
+          placement="left"
+          onClose={() => setDrawerVisible(false)}
+          open={drawerVisible}
+          bodyStyle={{ padding: 0 }}
+        >
+          <Menu
+            theme="light"
+            mode="inline"
+            selectedKeys={[location.pathname]}
+            items={menuItems}
+            className="main-menu"
+            onClick={() => setDrawerVisible(false)}
+          />
+        </Drawer>
+      )}
       <Layout className={`content-layout ${!collapsed && !isMobile ? 'expanded' : ''}`}>
         <Header className="header" style={{ background: colorBgContainer }}>
           <span
             className="menu-toggle-btn"
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => {
+              if (isMobile) {
+                setDrawerVisible(true);
+              } else {
+                setCollapsed(!collapsed);
+              }
+            }}
             style={{ cursor: 'pointer', fontSize: 20, marginLeft: 16, marginRight: 24 }}
           >
-            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            {collapsed || isMobile ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </span>
           <div className="datetime-container">
             <Text className="date-text">{currentDateTime.format('DD MMMM YYYY')}</Text>

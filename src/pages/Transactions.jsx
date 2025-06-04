@@ -59,7 +59,7 @@ const Transactions = () => {
       title: 'Total',
       dataIndex: 'total',
       key: 'total',
-      render: (total) => `$${total.toFixed(2)}`,
+      render: (total) => `LKR${total.toFixed(2)}`,
       sorter: (a, b) => a.total - b.total,
     },
     {
@@ -109,7 +109,7 @@ const Transactions = () => {
       <Card>
         <div className="transactions-header">
           <h1>Transactions</h1>
-          <Space>
+          <div className="search-controls">
             <RangePicker
               onChange={setDateRange}
               className="date-range-picker"
@@ -120,15 +120,17 @@ const Transactions = () => {
             >
               Search
             </Button>
-          </Space>
+          </div>
         </div>
 
-        <Table
-          columns={columns}
-          dataSource={filteredTransactions}
-          rowKey="id"
-          pagination={{ pageSize: 10 }}
-        />
+        <div className="table-responsive">
+          <Table
+            columns={columns}
+            dataSource={filteredTransactions}
+            rowKey="id"
+            pagination={{ pageSize: 10 }}
+          />
+        </div>
       </Card>
     </div>
   );

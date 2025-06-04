@@ -23,7 +23,7 @@ const Products = () => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (price) => `$${price.toFixed(2)}`,
+      render: (price) => `LKR${price.toFixed(2)}`,
     },
     {
       title: 'Stock',
@@ -100,12 +100,14 @@ const Products = () => {
         </Button>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={products}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      <div className="table-responsive">
+        <Table
+          columns={columns}
+          dataSource={products}
+          rowKey="id"
+          pagination={{ pageSize: 10 }}
+        />
+      </div>
 
       <Modal
         title={editingProduct ? 'Edit Product' : 'Add Product'}

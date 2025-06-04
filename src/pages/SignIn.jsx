@@ -20,7 +20,7 @@ const SignIn = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (values.username === 'admin' && values.password === 'password') {
+      if (values.username === 'Zedx' && values.password === 'Jesuran2000') {
         notification.success({
           message: 'Login Successful',
           description: 'Welcome to Zed_X Automotive!',

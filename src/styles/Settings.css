@@ -38,8 +38,10 @@
 }
 
 .settings-actions {
-  text-align: center;
-  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px;
 }
 
 @media (max-width: 768px) {
@@ -67,4 +69,76 @@
     width: 100%;
     margin-bottom: 8px;
   }
+}
+
+@media (max-width: 480px) {
+  .settings-container {
+    padding: 4px;
+  }
+  .settings-header {
+    margin-bottom: 12px;
+  }
+  .settings-title {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+  .ant-card {
+    padding: 0;
+  }
+  .ant-row {
+    flex-direction: column !important;
+    gap: 0;
+  }
+  .ant-col {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .ant-form-item {
+    margin-bottom: 12px;
+  }
+  .ant-input,
+  .ant-input-number,
+  .ant-select,
+  .ant-picker,
+  .ant-switch {
+    width: 100% !important;
+    font-size: 14px;
+  }
+  .logo-upload {
+    margin-top: 4px;
+  }
+  .settings-actions {
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 18px;
+    align-items: center;
+  }
+  .settings-actions .ant-btn {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    font-size: 16px;
+    padding: 12px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.08);
+    text-align: center;
+    display: block;
+  }
+  .settings-actions .ant-btn:not(.ant-btn-primary) {
+    background: #fff;
+    border: 1.5px solid #d9d9d9;
+    color: #333;
+    font-weight: 500;
+  }
+  .settings-actions .ant-btn-primary {
+    background: linear-gradient(90deg, #4096ff 60%, #69b1ff 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+.settings-actions .ant-btn {
+  text-align: center;
 } 

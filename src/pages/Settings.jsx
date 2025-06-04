@@ -257,24 +257,22 @@ const Settings = () => {
         <Divider />
 
         <div className="settings-actions">
-          <Space>
-            <Button
-              type="primary"
-              htmlType="submit"
-              icon={<SaveOutlined />}
-              size="large"
-              loading={loading}
-              onClick={() => form.submit()}
-            >
-              Save Settings
-            </Button>
-            <Button
-              size="large"
-              onClick={() => form.resetFields()}
-            >
-              Reset
-            </Button>
-          </Space>
+          <Button
+            type="primary"
+            htmlType="submit"
+            icon={<SaveOutlined />}
+            size="large"
+            loading={loading}
+            onClick={() => form.submit()}
+          >
+            Save Settings
+          </Button>
+          <Button
+            size="large"
+            onClick={() => form.resetFields()}
+          >
+            Reset
+          </Button>
         </div>
       </Card>
     </div>

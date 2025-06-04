@@ -1,10 +1,10 @@
-# Bike Shop POS System
+# Zed_X Automotive POS System
 
-A modern Point of Sale system built with React for bike shops to manage inventory, sales, and customer relationships.
+A modern Point of Sale system built with React for Zed_X Automotive to manage inventory, sales, repairs, and bike or vehicle modifications.
 
 ## Features
 
-- Inventory management for bikes and accessories
+- Inventory management for vehicles, bikes, and accessories
 - Sales processing and transaction history
 - Customer management
 - Reporting and analytics
@@ -36,7 +36,7 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Open [http://localhost:4000](http://localhost:4000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
