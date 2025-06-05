@@ -121,4 +121,34 @@
   .styled-button {
     height: 40px;
   }
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ant-notification-notice {
+  animation: slideUpFadeIn 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+.ant-notification-notice.ant-notification-fade-leave {
+  animation: fadeOut 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards !important;
 } 

@@ -26,10 +26,12 @@ import {
   EnvironmentOutlined,
   GlobalOutlined,
   BellOutlined,
-  PrinterOutlined
+  PrinterOutlined,
+  LogoutOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import '../styles/Settings.css';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -37,6 +39,7 @@ const { TabPane } = Tabs;
 const Settings = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -271,6 +274,27 @@ const Settings = () => {
             onClick={() => form.resetFields()}
           >
             Reset
+          </Button>
+        </div>
+        <div
+          className="mobile-logout-btn"
+          style={{
+            display: window.innerWidth <= 768 ? 'flex' : 'none',
+            justifyContent: 'center',
+            marginTop: 24
+          }}
+        >
+          <Button
+            type="default"
+            danger
+            icon={<LogoutOutlined />}
+            size="large"
+            onClick={() => {
+              localStorage.removeItem('isAuthenticated');
+              navigate('/signin');
+            }}
+          >
+            Logout
           </Button>
         </div>
       </Card>

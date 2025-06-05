@@ -19,12 +19,12 @@ const SignIn = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const isMobile = window.innerWidth <= 768;
       if (values.username === 'Zedx' && values.password === 'Jesuran2000') {
         notification.success({
           message: 'Login Successful',
           description: 'Welcome to Zed_X Automotive!',
-          placement: 'topRight',
+          placement: isMobile ? 'bottomRight' : 'topRight',
         });
         localStorage.setItem('isAuthenticated', 'true');
         navigate('/dashboard');
@@ -32,7 +32,7 @@ const SignIn = () => {
         notification.error({
           message: 'Login Failed',
           description: 'Invalid username or password.',
-          placement: 'topRight',
+          placement: isMobile ? 'bottomRight' : 'topRight',
         });
       }
     } finally {
