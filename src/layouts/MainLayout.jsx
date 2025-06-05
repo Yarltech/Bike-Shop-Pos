@@ -134,40 +134,35 @@ const MainLayout = ({ children }) => {
           </div>
         </Sider>
       )}
-      {/* Mobile Drawer */}
+      {/* Mobile Bottom Navigation Bar */}
       {isMobile && (
-        <Drawer
-          title="Menu"
-          placement="left"
-          onClose={() => setDrawerVisible(false)}
-          open={drawerVisible}
-          bodyStyle={{ padding: 0 }}
-        >
-          <Menu
-            theme="light"
-            mode="inline"
-            selectedKeys={[location.pathname]}
-            items={menuItems}
-            className="main-menu"
-            onClick={() => setDrawerVisible(false)}
-          />
-        </Drawer>
+        <nav className="bottom-nav-bar">
+          {menuItems.slice(0, 5).map((item) => (
+            <div
+              key={item.key}
+              className={`bottom-nav-item${location.pathname === item.key ? ' active' : ''}`}
+              onClick={() => navigate(item.key)}
+            >
+              {item.icon}
+              <span className="bottom-nav-label">{item.label.props.children}</span>
+            </div>
+          ))}
+        </nav>
       )}
       <Layout className={`content-layout ${!collapsed && !isMobile ? 'expanded' : ''}`}>
         <Header className="header" style={{ background: colorBgContainer }}>
-          <span
-            className="menu-toggle-btn"
-            onClick={() => {
-              if (isMobile) {
-                setDrawerVisible(true);
-              } else {
+          {/* Hide menu toggle button on mobile */}
+          {!isMobile && (
+            <span
+              className="menu-toggle-btn"
+              onClick={() => {
                 setCollapsed(!collapsed);
-              }
-            }}
-            style={{ cursor: 'pointer', fontSize: 20, marginLeft: 16, marginRight: 24 }}
-          >
-            {collapsed || isMobile ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </span>
+              }}
+              style={{ cursor: 'pointer', fontSize: 20, marginLeft: 16, marginRight: 24 }}
+            >
+              {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            </span>
+          )}
           <div className="datetime-container">
             <Text className="date-text">{currentDateTime.format('DD MMMM YYYY')}</Text>
             <Text strong className="time-text">{currentDateTime.format('h:mm:ss A')}</Text>
