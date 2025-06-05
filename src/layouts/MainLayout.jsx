@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, theme, Typography, Drawer } from 'antd';
+import { Layout, Menu, theme, Typography } from 'antd';
 import {
   DashboardOutlined,
   ShoppingCartOutlined,
@@ -23,7 +23,6 @@ const { Text } = Typography;
 const MainLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(dayjs()); // State for current date and time
   const location = useLocation();
   const navigate = useNavigate(); // Initialize useNavigate
