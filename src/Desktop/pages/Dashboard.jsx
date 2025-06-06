@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Row, Col, Statistic, Card } from 'antd';
 import { 
   DollarOutlined, 
@@ -8,8 +8,12 @@ import {
 } from '@ant-design/icons';
 import { Line } from '@ant-design/plots';
 import '../styles/Dashboard.css';
+import useHeadingObserver from '../layouts/useHeadingObserver';
 
 const Dashboard = () => {
+  const headingRef = useRef(null);
+  useHeadingObserver(headingRef);
+
   // Sample data for the line chart
   const data = [
     { date: '2024-01', sales: 3500 },
@@ -36,7 +40,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h1>Dashboard</h1>
+      <h1 ref={headingRef} className="visually-hidden">Dashboard</h1>
       
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={6}>

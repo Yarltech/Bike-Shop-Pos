@@ -1,0 +1,150 @@
+.mobile-signin-container {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: #fff;
+  position: relative;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.signin-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-top: 48px;
+  margin-bottom: 12px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.signin-subtitle {
+  font-size: 1.15rem;
+  color: #444;
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.signin-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.signin-label {
+  font-size: 1rem;
+  color: #222;
+  margin-bottom: 6px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+.signin-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  background: #fafbfc;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.signin-input:focus {
+  border-color: #3b82f6;
+}
+
+.signin-btn {
+  width: 100%;
+  padding: 16px 0;
+  background: #3366ff;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 28px;
+  margin-top: 22px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 8px rgba(51,102,255,0.08);
+  transition: background 0.2s;
+}
+
+.signin-btn:hover {
+  background: #2952cc;
+}
+
+.forgot-password {
+  background: none;
+  border: none;
+  color: #6c7a89;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.signin-bottom-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 180px;
+  background: #aee2ff;
+  border-top-left-radius: 300px 120px;
+  border-top-right-radius: 300px 120px;
+  z-index: 0;
+}
+
+@media (max-width: 400px) {
+  .mobile-signin-container {
+    padding: 0 8px;
+  }
+  .signin-title {
+    font-size: 1.7rem;
+  }
+}
+
+.mobile-page-container {
+  width: 100vw;
+  min-height: 100vh;
+  padding: 0 16px;
+  box-sizing: border-box;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (max-width: 400px) {
+  .mobile-page-container {
+    padding: 0 4px;
+  }
+}
+
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper .signin-input {
+  padding-right: 40px;
+}
+
+.password-eye {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 1.2em;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+} 

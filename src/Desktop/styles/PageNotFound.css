@@ -1,0 +1,203 @@
+.not-found-split-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f7f8fc;
+  padding: 0 5vw;
+  gap: 2vw;
+}
+
+.not-found-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 320px;
+  max-width: 500px;
+}
+
+.not-found-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 1.2rem;
+}
+
+.not-found-desc {
+  color: #6b7280;
+  font-size: 1.15rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.not-found-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  background: linear-gradient(270deg, #6a5af9, #f857a6, #6a5af9, #43e97b, #38f9d7, #f857a6, #6a5af9);
+  background-size: 400% 400%;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.9rem 2.2rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(106, 90, 249, 0.18);
+  box-shadow: 0 6px 24px rgba(106, 90, 249, 0.13), 0 1.5px 4px rgba(248, 87, 166, 0.10);
+  text-decoration: none;
+  transition: box-shadow 0.2s, transform 0.18s, border 0.2s;
+  outline: none;
+  cursor: pointer;
+  animation: gradientWave 8s ease-in-out infinite;
+}
+
+@keyframes gradientWave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.not-found-home-btn:hover, .not-found-home-btn:focus {
+  background: linear-gradient(90deg, #f857a6 0%, #6a5af9 100%);
+  box-shadow: 0 10px 32px rgba(106, 90, 249, 0.18), 0 2px 8px rgba(248, 87, 166, 0.13);
+  transform: translateY(-2px) scale(1.04);
+  border: 1.5px solid #f857a6;
+}
+
+.not-found-home-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(106, 90, 249, 0.10);
+}
+
+.not-found-btn-icon {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin-right: 0.2em;
+}
+
+.not-found-btn-icon svg {
+  display: block;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.not-found-right {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 320px;
+  max-width: 600px;
+}
+
+.not-found-float-img-mobile {
+  display: none;
+}
+.not-found-float-img-desktop {
+  display: block;
+  position: relative;
+  z-index: 2;
+  max-width: 90%;
+  max-height: 400px;
+  animation: float404 8s ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
+}
+
+.not-found-large-404 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12rem;
+  font-weight: 800;
+  color: #dbe1ea;
+  opacity: 0.7;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes float404 {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-32px);
+  }
+}
+
+@media (max-width: 900px) {
+  .not-found-split-container {
+    flex-direction: column;
+    padding: 3vw 2vw;
+  }
+  .not-found-left, .not-found-right {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  .not-found-large-404 {
+    font-size: 7rem;
+  }
+  .not-found-float-img-mobile {
+    max-height: 220px;
+  }
+}
+
+@media (max-width: 600px) {
+  .not-found-split-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    padding: 0 2vw;
+    overflow: hidden;
+  }
+  .not-found-left {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    align-items: center;
+    text-align: center;
+    z-index: 2;
+    position: relative;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  .not-found-right {
+    display: none;
+  }
+  .not-found-float-img-mobile {
+    display: block;
+    position: static;
+    margin: 0 auto 2rem auto;
+    left: auto;
+    top: auto;
+    transform: none;
+    max-width: 70vw;
+    max-height: 32vw;
+    width: auto;
+    height: auto;
+    opacity: 1;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+    animation: float404 8s ease-in-out infinite;
+  }
+  .not-found-float-img-desktop {
+    display: none;
+  }
+}

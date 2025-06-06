@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Table, Button, Modal, Form, Input, InputNumber, Space, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import '../styles/Products.css';
+import useHeadingObserver from '../layouts/useHeadingObserver';
 
 const Products = () => {
   const [products, setProducts] = useState([
@@ -12,6 +13,8 @@ const Products = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [form] = Form.useForm();
+  const headingRef = useRef(null);
+  useHeadingObserver(headingRef);
 
   const columns = [
     {
@@ -89,8 +92,8 @@ const Products = () => {
 
   return (
     <div className="products-container">
+      <h1 ref={headingRef} className="visually-hidden">Products</h1>
       <div className="products-header">
-        <h1>Products</h1>
         <Button
           type="primary"
           icon={<PlusOutlined />}

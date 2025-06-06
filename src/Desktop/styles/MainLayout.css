@@ -50,13 +50,13 @@
 }
 
 .content-layout {
-  margin-left: 80px;
+  margin-left: 0;
   transition: all 0.2s;
   width: 100%;
 }
 
 .content-layout.expanded {
-  margin-left: 200px;
+  margin-left: 50px;
 }
 
 .header {
@@ -120,23 +120,36 @@
   overflow: auto;
 }
 
-.menu-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #1890ff;
-  transition: color 0.2s;
+@media (max-width: 1200px) {
+  .content-layout,
+  .content-layout.expanded {
+    margin-left: 60px;
+  }
 }
 
-.menu-toggle-btn:hover {
-  color: #40a9ff;
+@media (max-width: 992px) {
+  .content-layout,
+  .content-layout.expanded {
+    margin-left: 48px;
+  }
 }
 
 @media (max-width: 768px) {
-  .content-layout {
+  .content-layout,
+  .content-layout.expanded {
+    margin-left: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  .content-layout,
+  .content-layout.expanded {
     margin-left: 0;
   }
+}
+
+@media (max-width: 480px) {
+  .content-layout,
   .content-layout.expanded {
     margin-left: 0;
   }
@@ -169,7 +182,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 60px;
+    width: 100vw;
     background: #fff;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
     display: flex;
@@ -177,6 +190,8 @@
     align-items: center;
     z-index: 1200;
     border-top: 1px solid #f0f0f0;
+    height: 80px;
+    padding-bottom: 16px;
   }
   .bottom-nav-item {
     flex: 1;
@@ -199,4 +214,42 @@
     margin-top: 2px;
     display: block;
   }
+  .products-section {
+    margin-top: 16px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .content-layout,
+  .content-layout.expanded {
+    margin-left: 0;
+  }
+}
+
+.main-header {
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 64px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.datetime-display {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  margin-left: auto;
+}
+
+.main-layout-flex {
+  display: flex;
+}
+
+.main-content-area {
+  flex: 1;
+  margin-left: 220px;
+  margin-top: 64px;
+  min-height: 100vh;
+  background: #fff;
 } 

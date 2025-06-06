@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Card, 
   Form, 
@@ -32,6 +32,7 @@ import {
 import dayjs from 'dayjs';
 import '../styles/Settings.css';
 import { useNavigate } from 'react-router-dom';
+import useHeadingObserver from '../layouts/useHeadingObserver';
 
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
@@ -40,6 +41,8 @@ const Settings = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const headingRef = useRef(null);
+  useHeadingObserver(headingRef);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -67,6 +70,7 @@ const Settings = () => {
 
   return (
     <div className="settings-container">
+      <h1 ref={headingRef} className="visually-hidden">Settings</h1>
       <Card>
         <div className="settings-header">
           <Title level={2} className="settings-title">

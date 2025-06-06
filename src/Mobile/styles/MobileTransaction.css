@@ -1,0 +1,35 @@
+.mobile-transaction {
+  padding: 0 16px;
+}
+
+.mobile-transaction h2 {
+  text-align: left;
+  color: #333;
+  margin: 24px 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  position: relative;
+  padding-left: 12px;
+}
+
+.mobile-transaction h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 24px;
+  background: #007bff;
+  border-radius: 2px;
+}
+
+@media (max-width: 400px) {
+  .mobile-transaction {
+    padding: 0 8px;
+  }
+  .mobile-transaction h2 {
+    margin: 16px 0;
+    font-size: 1.5rem;
+  }
+} 

@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
-import MainLayout from './layouts/MainLayout';
-import Dashboard from './pages/Dashboard';
-import POS from './pages/POS';
-import Products from './pages/Products';
-import Transactions from './pages/Transactions';
-import Settings from './pages/Settings';
-import SignIn from './pages/SignIn';
-import ForgotPassword from './pages/ForgotPassword';
+import MainLayout from './Desktop/layouts/MainLayout';
+import Dashboard from './Desktop/pages/Dashboard';
+import POS from './Desktop/pages/POS';
+import Products from './Desktop/pages/Products';
+import Transactions from './Desktop/pages/Transactions';
+import Settings from './Desktop/pages/Settings';
+import SignIn from './Desktop/pages/SignIn';
+import ForgotPassword from './Desktop/pages/ForgotPassword';
+import PageNotFound from './Desktop/layouts/PageNotFound';
+import Customers from './Desktop/pages/Customer';
+import { PageTitleProvider } from './Desktop/layouts/PageTitleContext';
+// Mobile imports
+import MobileSignIn from './Mobile/pages/MobileSignIn';
+import MobileForgotPassword from './Mobile/pages/MobileForgotPassword';
+import MobileIndex from './Mobile/layout/MobileIndex';
+import MobilePos from './Mobile/pages/MobilePos';
+import MobileDashboard from './Mobile/pages/MobileDashboard';
+import MobileInventory from './Mobile/pages/MobileInventory';
+import MobileTransaction from './Mobile/pages/MobileTransaction';
+import MobileSetting from './Mobile/pages/MobileSetting';
+import MobilePageNotFound from './Mobile/pages/MobilePageNotFound';
+import MobileLostConnection from './Mobile/pages/MobileLostConnection';
+import MobileUnderMaintenance from './Mobile/pages/MobileUnderMaintenance';
+// Add more mobile pages as you create them
 
 // A simple authentication check (replace with your actual auth logic)
 const isAuthenticated = () => {
@@ -23,7 +39,19 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Custom hook to detect if screen is mobile
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 480);
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 480);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return isMobile;
+}
+
 function App() {
+  const isMobile = useIsMobile();
   return (
     <ConfigProvider
       theme={{
@@ -33,26 +61,46 @@ function App() {
         },
       }}
     >
-      <Router>
-        <Routes>
-          {/* Public route for Sign-in */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-
-          {/* Protected routes */}
-          <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
-          <Route path="/pos" element={<ProtectedRoute><MainLayout><POS /></MainLayout></ProtectedRoute>} />
-          <Route path="/products" element={<ProtectedRoute><MainLayout><Products /></MainLayout></ProtectedRoute>} />
-          <Route path="/transactions" element={<ProtectedRoute><MainLayout><Transactions /></MainLayout></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
-
-          {/* Redirect root to sign-in */}
-          <Route path="/" element={<Navigate to="/signin" replace />} />
-
-          {/* Redirect to sign-in if no routes match */}
-          <Route path="*" element={<Navigate to="/signin" replace />} />
-        </Routes>
-      </Router>
+      <PageTitleProvider>
+        <Router>
+          <Routes>
+            {isMobile ? (
+              // Mobile routes
+              <>
+                <Route path="/signin" element={<MobileSignIn />} />
+                <Route path="/forgot-password" element={<MobileForgotPassword />} />
+                <Route element={<MobileIndex />}>
+                  <Route path="/home" element={<MobileDashboard />} />
+                  <Route path="/pos" element={<MobilePos />} />
+                  <Route path="/analytics" element={<MobileInventory />} />
+                  <Route path="/history" element={<MobileTransaction />} />
+                  <Route path="/profile" element={<MobileSetting />} />
+                </Route>
+                <Route path="/404" element={<MobilePageNotFound />} />
+                <Route path="/lost-connection" element={<MobileLostConnection />} />
+                <Route path="/maintenance" element={<MobileUnderMaintenance />} />
+                <Route path="/" element={<Navigate to="/signin" replace />} />
+                <Route path="*" element={<MobilePageNotFound />} />
+              </>
+            ) : (
+              // Desktop routes
+              <>
+                <Route path="/signin" element={<SignIn />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/pagenotfound" element={<PageNotFound />} />
+                <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
+                <Route path="/pos" element={<ProtectedRoute><MainLayout><POS /></MainLayout></ProtectedRoute>} />
+                <Route path="/products" element={<ProtectedRoute><MainLayout><Products /></MainLayout></ProtectedRoute>} />
+                <Route path="/customers" element={<ProtectedRoute><MainLayout><Customers /></MainLayout></ProtectedRoute>} />
+                <Route path="/transactions" element={<ProtectedRoute><MainLayout><Transactions /></MainLayout></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
+                <Route path="/" element={<Navigate to="/signin" replace />} />
+                <Route path="*" element={<Navigate to="/pagenotfound" replace />} />
+              </>
+            )}
+          </Routes>
+        </Router>
+      </PageTitleProvider>
     </ConfigProvider>
   );
 }

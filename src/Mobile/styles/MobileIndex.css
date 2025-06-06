@@ -1,0 +1,26 @@
+.mobile-index-container {
+  min-height: 100vh;
+  padding-bottom: 90px;
+  background: #f7f8fa;
+  box-sizing: border-box;
+}
+
+.mobile-index-content {
+  padding: 24px 0;
+  min-height: calc(100vh - 90px);
+  box-sizing: border-box;
+}
+
+.mobile-index-content h2 {
+  text-align: center;
+  color: #888;
+}
+
+@media (max-width: 400px) {
+  .mobile-index-container {
+    padding-bottom: 70px;
+  }
+  .mobile-index-content {
+    padding: 12px 0;
+  }
+}

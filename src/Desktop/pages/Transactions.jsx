@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Table, Card, DatePicker, Space, Button, Tag } from 'antd';
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import '../styles/Transactions.css';
+import useHeadingObserver from '../layouts/useHeadingObserver';
 
 const { RangePicker } = DatePicker;
 
 const Transactions = () => {
   const [dateRange, setDateRange] = useState(null);
+  const headingRef = useRef(null);
+  useHeadingObserver(headingRef);
 
   // Sample transactions data
   const transactions = [
@@ -106,9 +109,9 @@ const Transactions = () => {
 
   return (
     <div className="transactions-container">
+      <h1 ref={headingRef} className="visually-hidden">Transactions</h1>
       <Card>
         <div className="transactions-header">
-          <h1>Transactions</h1>
           <div className="search-controls">
             <RangePicker
               onChange={setDateRange}
