@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Row, Col, message } from 'antd';
-import { updateUser } from '../../Api/UserApi';
+import { updateUser } from '../../API/UserApi';
 import '../styles/Settings.css';
 
 const initialValues = {
