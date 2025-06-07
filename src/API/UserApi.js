@@ -138,33 +138,15 @@ export const saveUser = async (userData) => {
 
 export const updateUser = async (userData) => {
     try {
-        const accessToken = localStorage.getItem("accessToken");
-
-        if (!accessToken) {
-            return null;
-        }
-
-        const decodedToken = decodeJwt(accessToken);
-        const userRole = decodedToken?.roles[0]?.authority;
-
-        if (userRole !== "ROLE_ADMIN" && userRole !== "ROLE_MANAGER") {
-            return null;
-        }
-
-        if (!userData.id) {
-            return null;
-        }
-
-        const { ...updateData } = userData;
-        const response = await axios.post(`${BASE_BACKEND_URL}/user/update`, updateData, {
+        const response = await axios.post(`${BASE_BACKEND_URL}/user/update`, userData, {
             headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
         });
-
+        console.log('API response:', response.data);
         return response.data;
     } catch (error) {
+        console.error('Error in updateUser:', error);
         return null;
     }
 };
@@ -249,6 +231,18 @@ export const registerUser = async (userData) => {
         return response.data;
     } catch (error) {
         return { error: error.response?.data?.errorDescription || 'Registration failed' };
+    }
+};
+
+export const getByUsername = async (username) => {
+    try {
+        const response = await axios.get(`${BASE_BACKEND_URL}/user/getByUsername`, {
+            params: { username },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user by username:', error);
+        return null;
     }
 };
 

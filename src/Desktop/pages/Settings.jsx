@@ -1,308 +1,182 @@
-import React, { useState, useRef } from 'react';
-import { 
-  Card, 
-  Form, 
-  Input, 
-  InputNumber, 
-  Switch, 
-  Button, 
-  Divider, 
-  Select, 
-  message, 
-  Row, 
-  Col, 
-  Typography,
-  TimePicker,
-  Tabs,
-  Upload
-} from 'antd';
-import { 
-  SaveOutlined, 
-  ShopOutlined, 
-  ClockCircleOutlined, 
-  SettingOutlined,
-  UploadOutlined,
-  PhoneOutlined,
-  EnvironmentOutlined,
-  GlobalOutlined,
-  BellOutlined,
-  PrinterOutlined,
-  LogoutOutlined
-} from '@ant-design/icons';
-import dayjs from 'dayjs';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Row, Col, message } from 'antd';
+import { updateUser } from '../../Api/UserApi';
 import '../styles/Settings.css';
-import { useNavigate } from 'react-router-dom';
-import useHeadingObserver from '../layouts/useHeadingObserver';
 
-const { Title, Text } = Typography;
-const { TabPane } = Tabs;
+const initialValues = {
+  username: '',
+  name: '',
+  email: '',
+  mobile: '',
+  password: '',
+};
 
 const Settings = () => {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const headingRef = useRef(null);
-  useHeadingObserver(headingRef);
+  const [isEditing, setIsEditing] = useState(false);
+  const [user, setUser] = useState(null);
+  const [originalUser, setOriginalUser] = useState(null);
 
-  const onFinish = async (values) => {
-    setLoading(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Settings saved:', values);
-      message.success('Settings saved successfully');
-    } catch (error) {
-      message.error('Failed to save settings');
-    } finally {
-      setLoading(false);
+  // Load user profile from localStorage on mount
+  useEffect(() => {
+    const storedProfile = localStorage.getItem('userProfile');
+    if (storedProfile) {
+      const parsed = JSON.parse(storedProfile);
+      const userObj = parsed?.responseDto?.[0];
+      if (userObj) {
+        setUser(userObj);
+        setOriginalUser(userObj);
+        form.setFieldsValue({
+          username: userObj.userName || '',
+          name: userObj.name || '',
+          email: userObj.emailAddress || '',
+          mobile: userObj.mobileNumber || '',
+          password: userObj.password || '',
+        });
+      }
+    }
+  }, [form]);
+
+  // Handle input changes
+  const handleInputChange = (field, value) => {
+    if (!isEditing) return;
+    setUser(prev => ({ ...prev, [field]: value }));
+    form.setFieldValue(field, value);
+  };
+
+  // Cancel editing and revert to original user data
+  const handleCancel = () => {
+    if (originalUser) {
+      setUser(originalUser);
+      form.setFieldsValue({
+        username: originalUser.userName || '',
+        name: originalUser.name || '',
+        email: originalUser.emailAddress || '',
+        mobile: originalUser.mobileNumber || '',
+        password: originalUser.password || '',
+      });
+    }
+    setIsEditing(false);
+  };
+
+  // Save handler
+  const handleSave = async () => {
+    if (!user) return;
+    const updatedUser = {
+      ...user,
+      userName: user.username || user.userName,
+      name: user.name,
+      emailAddress: user.email || user.emailAddress,
+      mobileNumber: user.mobile || user.mobileNumber,
+      password: user.password || '',
+    };
+    const result = await updateUser(updatedUser);
+    console.log('updateUser result:', result);
+    if (result && result.status) {
+      message.success('Profile updated successfully!');
+      setUser(updatedUser);
+      setOriginalUser(updatedUser);
+      localStorage.setItem('userProfile', JSON.stringify({ responseDto: [updatedUser] }));
+      setIsEditing(false);
+    } else {
+      message.error('Failed to update profile.');
     }
   };
 
-  const businessHoursInitialValues = {
-    monday: [dayjs('09:00', 'HH:mm'), dayjs('18:00', 'HH:mm')],
-    tuesday: [dayjs('09:00', 'HH:mm'), dayjs('18:00', 'HH:mm')],
-    wednesday: [dayjs('09:00', 'HH:mm'), dayjs('18:00', 'HH:mm')],
-    thursday: [dayjs('09:00', 'HH:mm'), dayjs('18:00', 'HH:mm')],
-    friday: [dayjs('09:00', 'HH:mm'), dayjs('18:00', 'HH:mm')],
-    saturday: [dayjs('10:00', 'HH:mm'), dayjs('16:00', 'HH:mm')],
-    sunday: null,
-  };
-
   return (
-    <div className="settings-container">
-      <h1 ref={headingRef} className="visually-hidden">Settings</h1>
-      <Card>
-        <div className="settings-header">
-          <Title level={2} className="settings-title">
-            <SettingOutlined />
-            Shop Settings
-          </Title>
-          <Text type="secondary">Manage your shop's configuration and preferences</Text>
+    <Form
+      form={form}
+      layout="vertical"
+      className="profile-form"
+      initialValues={initialValues}
+      onFinish={handleSave}
+    >
+      <div className="profile-logo-container">
+        <img src={require('../../img/Admin.jpg')} alt="Profile" className="profile-logo" />
+        <div className="profile-role">{user?.userRoleDto?.userRole || 'Role'}</div>
+      </div>
+      <Row gutter={16}>
+        <Col xs={24} md={12}>
+          <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter username' }]}> 
+            <Input
+              readOnly={!isEditing}
+              value={user?.userName || ''}
+              onChange={e => handleInputChange('userName', e.target.value)}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} md={12}>
+          <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please enter name' }]}> 
+            <Input
+              readOnly={!isEditing}
+              value={user?.name || ''}
+              onChange={e => handleInputChange('name', e.target.value)}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col xs={24} md={12}>
+          <Form.Item name="email" label="Email Address" rules={[{ required: true, type: 'email', message: 'Please enter a valid email address' }]}> 
+            <Input
+              readOnly={!isEditing}
+              value={user?.emailAddress || ''}
+              onChange={e => handleInputChange('emailAddress', e.target.value)}
+            />
+          </Form.Item>
+        </Col>
+        <Col xs={24} md={12}>
+          <Form.Item name="mobile" label="Mobile Number" rules={[{ required: true, message: 'Please enter mobile number' }]}> 
+            <Input
+              readOnly={!isEditing}
+              value={user?.mobileNumber || ''}
+              onChange={e => handleInputChange('mobileNumber', e.target.value)}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col xs={24} md={24}>
+          <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please enter password' }]}> 
+            <Input.Password
+              readOnly={!isEditing}
+              value={user?.password || ''}
+              onChange={e => handleInputChange('password', e.target.value)}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      {!isEditing ? (
+        <div className="profile-actions-row">
+          <Button
+            type="primary"
+            className="save-btn"
+            size="large"
+            onClick={() => setIsEditing(true)}
+          >
+            Update
+          </Button>
         </div>
-
-        <Tabs defaultActiveKey="1" size="large" centered>
-          <TabPane 
-            tab={
-              <span>
-                <ShopOutlined />
-                Shop Information
-              </span>
-            } 
-            key="1"
+      ) : (
+        <div className="profile-actions-row">
+          <Button
+            onClick={handleCancel}
+            className="cancel-btn"
+            size="large"
           >
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={onFinish}
-              initialValues={{
-                shopName: 'Bike Repair Shop',
-                taxRate: 15,
-                currency: 'LKR',
-                enableNotifications: true,
-                enableReceiptPrinting: true,
-                businessHours: businessHoursInitialValues,
-              }}
-            >
-              <Row gutter={[24, 0]}>
-                <Col xs={24} md={12}>
-                  <Form.Item
-                    name="shopName"
-                    label="Shop Name"
-                    rules={[{ required: true, message: 'Please enter shop name' }]}
-                  >
-                    <Input prefix={<ShopOutlined />} placeholder="Enter shop name" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
-                    name="phone"
-                    label="Phone Number"
-                    rules={[{ required: true, message: 'Please enter phone number' }]}
-                  >
-                    <Input prefix={<PhoneOutlined />} placeholder="Enter phone number" />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Form.Item
-                name="address"
-                label="Shop Address"
-                rules={[{ required: true, message: 'Please enter shop address' }]}
-              >
-                <Input.TextArea 
-                  prefix={<EnvironmentOutlined />} 
-                  rows={3} 
-                  placeholder="Enter shop address"
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="logo"
-                label="Shop Logo"
-              >
-                <Upload
-                  listType="picture-card"
-                  maxCount={1}
-                  beforeUpload={() => false}
-                >
-                  <div className="logo-upload">
-                    <UploadOutlined />
-                    <div>Upload</div>
-                  </div>
-                </Upload>
-              </Form.Item>
-            </Form>
-          </TabPane>
-
-          <TabPane 
-            tab={
-              <span>
-                <ClockCircleOutlined />
-                Business Hours
-              </span>
-            } 
-            key="2"
-          >
-            <Form.Item label="Business Hours" className="business-hours-form-item">
-              {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => (
-                <Form.Item
-                  key={day}
-                  name={['businessHours', day]}
-                  label={day.charAt(0).toUpperCase() + day.slice(1)}
-                  className="business-hours-day-item"
-                >
-                  <TimePicker.RangePicker 
-                    format="HH:mm"
-                    className="time-picker"
-                    disabled={day === 'sunday'}
-                  />
-                </Form.Item>
-              ))}
-            </Form.Item>
-          </TabPane>
-
-          <TabPane 
-            tab={
-              <span>
-                <GlobalOutlined />
-                Business Settings
-              </span>
-            } 
-            key="3"
-          >
-            <Row gutter={[24, 0]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  name="taxRate"
-                  label="Tax Rate (%)"
-                  rules={[{ required: true, message: 'Please enter tax rate' }]}
-                >
-                  <InputNumber 
-                    min={0} 
-                    max={100} 
-                    className="tax-input"
-                    prefix="%"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  name="currency"
-                  label="Currency"
-                  rules={[{ required: true, message: 'Please select currency' }]}
-                >
-                  <Select>
-                    <Select.Option value="LKR">LKR (රු)</Select.Option>
-                    <Select.Option value="USD">USD ($)</Select.Option>
-                    <Select.Option value="EUR">EUR (€)</Select.Option>
-                    <Select.Option value="GBP">GBP (£)</Select.Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-          </TabPane>
-
-          <TabPane 
-            tab={
-              <span>
-                <SettingOutlined />
-                System Settings
-              </span>
-            } 
-            key="4"
-          >
-            <Row gutter={[24, 0]}>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  name="enableNotifications"
-                  label="Enable Notifications"
-                  valuePropName="checked"
-                >
-                  <Switch 
-                    checkedChildren={<BellOutlined />} 
-                    unCheckedChildren={<BellOutlined />}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} md={12}>
-                <Form.Item
-                  name="enableReceiptPrinting"
-                  label="Enable Receipt Printing"
-                  valuePropName="checked"
-                >
-                  <Switch 
-                    checkedChildren={<PrinterOutlined />} 
-                    unCheckedChildren={<PrinterOutlined />}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </TabPane>
-        </Tabs>
-
-        <Divider />
-
-        <div className="settings-actions">
+            Cancel
+          </Button>
           <Button
             type="primary"
             htmlType="submit"
-            icon={<SaveOutlined />}
+            className="save-btn"
             size="large"
-            loading={loading}
-            onClick={() => form.submit()}
           >
-            Save Settings
-          </Button>
-          <Button
-            size="large"
-            onClick={() => form.resetFields()}
-          >
-            Reset
+            Save
           </Button>
         </div>
-        <div
-          className="mobile-logout-btn"
-          style={{
-            display: window.innerWidth <= 768 ? 'flex' : 'none',
-            justifyContent: 'center',
-            marginTop: 24
-          }}
-        >
-          <Button
-            type="default"
-            danger
-            icon={<LogoutOutlined />}
-            size="large"
-            onClick={() => {
-              localStorage.removeItem('isAuthenticated');
-              navigate('/signin');
-            }}
-          >
-            Logout
-          </Button>
-        </div>
-      </Card>
-    </div>
+      )}
+    </Form>
   );
 };
 

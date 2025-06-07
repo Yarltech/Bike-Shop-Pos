@@ -1,7 +1,118 @@
-.settings-container {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+/* Minimal, clean settings form */
+
+/* Remove any card/box backgrounds and borders */
+.settings-container, .ant-card, .ant-card-body {
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Center the form and set a max width */
+.profile-form {
+  max-width: 600px;
+  margin: 40px auto 0 auto;
+  padding: 0 16px;
+  background: none;
+  box-shadow: none;
+  border: none;
+}
+
+/* Profile logo styles */
+.profile-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profile-logo {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #f3f3f3;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: #fff;
+}
+
+.ant-form-item-label > label {
+  font-weight: 500;
+  color: #222;
+  font-size: 1rem;
+}
+
+.ant-form-item {
+  margin-bottom: 20px;
+}
+
+/* Responsive two-column layout for rows */
+.ant-row {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-form {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+  .ant-row {
+    flex-direction: column !important;
+    gap: 0;
+  }
+  .ant-col {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Save/Cancel buttons row */
+.profile-actions-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+}
+.save-btn {
+  background: #f57c1f;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  min-width: 120px;
+  transition: background 0.2s;
+}
+.save-btn:hover, .save-btn:focus {
+  background: #d96c13;
+  color: #fff;
+}
+.cancel-btn {
+  background: #fff;
+  border: 1.5px solid #f57c1f;
+  color: #f57c1f;
+  font-weight: 500;
+  border-radius: 6px;
+  min-width: 120px;
+  transition: background 0.2s, color 0.2s;
+}
+.cancel-btn:hover, .cancel-btn:focus {
+  background: #fbeee3;
+  color: #d96c13;
+  border-color: #d96c13;
+}
+@media (max-width: 768px) {
+  .profile-actions-row {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+    align-items: stretch;
+  }
+  .save-btn, .cancel-btn {
+    min-width: 100%;
+    font-size: 1rem;
+    padding: 12px 0;
+  }
 }
 
 .settings-header {
@@ -44,37 +155,13 @@
   gap: 12px;
 }
 
-@media (max-width: 768px) {
-  .settings-container {
-    padding: 16px;
-  }
-
-  .settings-header {
-    margin-bottom: 24px;
-  }
-
-  .business-hours-form-item {
-    margin-bottom: 16px;
-  }
-
-  .business-hours-day-item {
-    margin-bottom: 12px;
-  }
-
-  .settings-actions {
-    margin-top: 16px;
-  }
-
-  .settings-actions .ant-btn {
-    width: 100%;
-    margin-bottom: 8px;
-  }
+/* Style for green checkmark in input suffix */
+.ant-input-suffix span {
+  font-size: 1.2em;
+  vertical-align: middle;
 }
 
 @media (max-width: 480px) {
-  .settings-container {
-    padding: 4px;
-  }
   .settings-header {
     margin-bottom: 12px;
   }
@@ -141,4 +228,13 @@
 
 .settings-actions .ant-btn {
   text-align: center;
+}
+
+.profile-role {
+  text-align: center;
+  font-size: 1.35rem;
+  color: #555;
+  margin-top: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 } 

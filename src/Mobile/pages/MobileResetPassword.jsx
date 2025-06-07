@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { resetPassword } from '../../API/config';
+import { resetPassword } from '../../Api/config';
 import '../styles/MobileSignIn.css';
 
 const MobileResetPassword = () => {

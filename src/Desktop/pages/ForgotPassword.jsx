@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, Form, Input, Button, Typography, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { forgotPassword } from '../../API/config';
+import { forgotPassword } from '../../Api/config';
 import '../styles/SignIn.css';
 
 const { Title, Text } = Typography;

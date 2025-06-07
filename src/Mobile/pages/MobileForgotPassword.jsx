@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { forgotPassword } from '../../API/config';
+import { forgotPassword } from '../../Api/config';
 import '../styles/MobileSignIn.css';
 
 const MobileForgotPassword = () => {

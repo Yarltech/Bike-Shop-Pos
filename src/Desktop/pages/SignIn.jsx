@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { getAccessToken } from '../../API/config';
+import { getAccessToken } from '../../Api/config';
+import { getByUsername } from '../../Api/UserApi';
 import '../styles/SignIn.css';
 
 const { Title, Text } = Typography;
@@ -21,6 +22,11 @@ const SignIn = () => {
       const response = await getAccessToken(values.username, values.password);
       
       if (response.success) {
+        // Fetch user profile by username and store in localStorage
+        const userProfile = await getByUsername(values.username);
+        if (userProfile) {
+          localStorage.setItem('userProfile', JSON.stringify(userProfile));
+        }
         notification.success({
           message: 'Login Successful',
           description: 'Welcome to Zed_X Automotive!',
