@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { getAccessToken } from '../../Api/config';
-import { getByUsername } from '../../Api/UserApi';
+import { getAccessToken } from '../../API/config';
+import { getByUsername } from '../../API/UserApi';
 import '../styles/SignIn.css';
 
 const { Title, Text } = Typography;
