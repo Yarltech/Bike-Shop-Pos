@@ -12,6 +12,7 @@ import ForgotPassword from './Desktop/pages/ForgotPassword';
 import PageNotFound from './Desktop/layouts/PageNotFound';
 import Customers from './Desktop/pages/Customer';
 import { PageTitleProvider } from './Desktop/layouts/PageTitleContext';
+import ResetPassword from './Desktop/pages/ResetPassword';
 // Mobile imports
 import MobileSignIn from './Mobile/pages/MobileSignIn';
 import MobileForgotPassword from './Mobile/pages/MobileForgotPassword';
@@ -24,6 +25,7 @@ import MobileSetting from './Mobile/pages/MobileSetting';
 import MobilePageNotFound from './Mobile/pages/MobilePageNotFound';
 import MobileLostConnection from './Mobile/pages/MobileLostConnection';
 import MobileUnderMaintenance from './Mobile/pages/MobileUnderMaintenance';
+import MobileResetPassword from './Mobile/pages/MobileResetPassword';
 // Add more mobile pages as you create them
 
 // A simple authentication check (replace with your actual auth logic)
@@ -69,6 +71,7 @@ function App() {
               <>
                 <Route path="/signin" element={<MobileSignIn />} />
                 <Route path="/forgot-password" element={<MobileForgotPassword />} />
+                <Route path="/reset-password" element={<MobileResetPassword />} />
                 <Route element={<MobileIndex />}>
                   <Route path="/home" element={<MobileDashboard />} />
                   <Route path="/pos" element={<MobilePos />} />
@@ -87,6 +90,7 @@ function App() {
               <>
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/pagenotfound" element={<PageNotFound />} />
                 <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
                 <Route path="/pos" element={<ProtectedRoute><MainLayout><POS /></MainLayout></ProtectedRoute>} />

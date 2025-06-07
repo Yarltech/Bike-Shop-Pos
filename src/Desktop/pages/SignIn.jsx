@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { getAccessToken } from '../../API/config';
 import '../styles/SignIn.css';
 
 const { Title, Text } = Typography;
@@ -16,10 +17,10 @@ const SignIn = () => {
   const onFinish = async (values) => {
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
       const isMobile = window.innerWidth <= 768;
-      if (values.username === 'Zedx' && values.password === 'Jesuran2000') {
+      const response = await getAccessToken(values.username, values.password);
+      
+      if (response.success) {
         notification.success({
           message: 'Login Successful',
           description: 'Welcome to Zed_X Automotive!',
@@ -28,12 +29,24 @@ const SignIn = () => {
         localStorage.setItem('isAuthenticated', 'true');
         navigate('/dashboard');
       } else {
+        let errorMessage = 'Invalid username or password.';
+        if (response.error === 'email_not_found') {
+          errorMessage = 'Username not found.';
+        } else if (response.error === 'incorrect_password') {
+          errorMessage = 'Incorrect password.';
+        }
         notification.error({
           message: 'Login Failed',
-          description: 'Invalid username or password.',
+          description: errorMessage,
           placement: isMobile ? 'bottomRight' : 'topRight',
         });
       }
+    } catch (error) {
+      notification.error({
+        message: 'Login Failed',
+        description: 'An error occurred during login. Please try again.',
+        placement: window.innerWidth <= 768 ? 'bottomRight' : 'topRight',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -74,12 +87,12 @@ const SignIn = () => {
               initialValues={{ remember: true }}
             >
               <Form.Item
-                label="Email"
+                label="Username"
                 name="username"
-                rules={[{ required: true, message: 'Please input your email!' }]}
+                rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Input
-                  placeholder="Enter your email"
+                  placeholder="Enter your username"
                   size="large"
                   className="styled-input"
                 />

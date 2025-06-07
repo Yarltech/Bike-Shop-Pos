@@ -1,31 +1,42 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, Typography, notification } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { forgotPassword } from '../../API/config';
+import { resetPassword } from '../../API/config';
 import '../styles/SignIn.css';
 
 const { Title, Text } = Typography;
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Get username from location state
+  const username = location.state?.username;
+
+  // Redirect if no username is provided
+  React.useEffect(() => {
+    if (!username) {
+      navigate('/forgot-password');
+    }
+  }, [username, navigate]);
 
   const onFinish = async (values) => {
     setIsLoading(true);
     try {
-      const response = await forgotPassword(values.username);
-      if (response === "Password reset email sent successfully") {
+      const response = await resetPassword(values.verificationCode, values.newPassword);
+      if (response === "Password reset successfully!") {
         notification.success({
-          message: 'Verification Code Sent',
-          description: 'Please check your email for the verification code.',
+          message: 'Password Reset Successful',
+          description: 'Your password has been reset successfully. Please sign in with your new password.',
           placement: window.innerWidth <= 768 ? 'bottomRight' : 'topRight',
         });
-        navigate('/reset-password', { state: { username: values.username } });
+        navigate('/signin');
       } else {
         notification.error({
           message: 'Error',
-          description: 'Failed to send verification code. Please try again.',
+          description: response || 'Failed to reset password. Please try again.',
           placement: window.innerWidth <= 768 ? 'bottomRight' : 'topRight',
         });
       }
@@ -65,21 +76,57 @@ const ForgotPassword = () => {
         >
           <Card className="styled-card">
             <div className="logo-container">
-              <Title level={2} style={{ margin: 0, fontSize: '2rem', textAlign: 'center' }}>Forgot Password</Title>
+              <Title level={2} style={{ margin: 0, fontSize: '2rem', textAlign: 'center' }}>Reset Password</Title>
             </div>
-            <p className="mobile-subheading">Enter your username to receive a verification code</p>
+            <p className="mobile-subheading">Enter the verification code sent to your email</p>
             <Form
-              name="forgot_password"
+              name="reset_password"
               onFinish={onFinish}
               layout="vertical"
             >
               <Form.Item
-                label="Username"
-                name="username"
-                rules={[{ required: true, message: 'Please input your username!' }]}
+                label="Verification Code"
+                name="verificationCode"
+                rules={[{ required: true, message: 'Please input the verification code!' }]}
               >
                 <Input
-                  placeholder="Enter your username"
+                  placeholder="Enter verification code"
+                  size="large"
+                  className="styled-input"
+                />
+              </Form.Item>
+              <Form.Item
+                label="New Password"
+                name="newPassword"
+                rules={[
+                  { required: true, message: 'Please input your new password!' },
+                  { min: 6, message: 'Password must be at least 6 characters!' }
+                ]}
+              >
+                <Input.Password
+                  placeholder="Enter new password"
+                  size="large"
+                  className="styled-input"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Confirm New Password"
+                name="confirmPassword"
+                dependencies={['newPassword']}
+                rules={[
+                  { required: true, message: 'Please confirm your new password!' },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('newPassword') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('The two passwords do not match!'));
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password
+                  placeholder="Confirm new password"
                   size="large"
                   className="styled-input"
                 />
@@ -93,7 +140,7 @@ const ForgotPassword = () => {
                   className="styled-button"
                   style={{ width: '100%' }}
                 >
-                  SEND VERIFICATION CODE
+                  RESET PASSWORD
                 </Button>
               </Form.Item>
             </Form>
@@ -122,4 +169,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword; 
+export default ResetPassword; 
