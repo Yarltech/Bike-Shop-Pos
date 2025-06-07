@@ -39,7 +39,7 @@ export const updateCustomer = async (customerData) => {
   }
 };
 
-export const getAllCustomersPaginated = async (pageNumber = 1, pageSize = 10, status = true) => {
+export const getAllCustomersPaginated = async (pageNumber = 1, pageSize = 7, status = true) => {
   try {
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/MobileNavbar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCashRegister, faBoxes, faHistory, faUserCog } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faCashRegister, faHistory, faUserCog, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const navItems = [
   {
@@ -16,12 +16,12 @@ const navItems = [
     icon: faCashRegister,
   },
   {
-    key: '/analytics',
-    label: 'Inventory',
-    icon: faBoxes,
+    key: '/customer',
+    label: 'Customer',
+    icon: faUser,
   },
   {
-    key: '/history',
+    key: '/transaction',
     label: 'Transactions',
     icon: faHistory,
   },
