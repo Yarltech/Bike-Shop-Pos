@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAccessToken } from '../../API/config';
+import { getByUsername } from '../../API/UserApi';
 import '../styles/MobileSignIn.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -23,6 +24,12 @@ const MobileSignIn = () => {
       const response = await getAccessToken(username, password);
       
       if (response.success) {
+        // Fetch user profile by username and store in localStorage
+        const userProfile = await getByUsername(username);
+        if (userProfile) {
+          console.log('Fetched user profile:', userProfile);
+          localStorage.setItem('userProfile', JSON.stringify(userProfile));
+        }
         localStorage.setItem('isAuthenticated', 'true');
         navigate('/home');
       } else {
