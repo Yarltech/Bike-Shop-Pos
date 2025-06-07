@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/MobileSetting.css';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { updateUser } from '../../Api/UserApi';
+import { updateUser } from '../../API/UserApi';
 import { message } from 'antd';
 
 const containerVariants = {
