@@ -1,8 +1,39 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 .pos-container {
   padding: 16px;
   max-width: 100%;
-  overflow-x: hidden;
   margin-top: 0;
+  height: calc(100vh - 64px); /* Assuming 64px is the height of the header/navbar */
+  display: flex;
+  flex-direction: column;
+}
+
+.products-section {
+  background-color: #ffffff; /* White background for the main card */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex: 1; /* Allow products section to grow */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Hide overflow within the section */
+}
+
+.products-section .ant-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: 0; /* Adjust padding as needed */
+}
+
+.products-section .ant-row {
+  flex: 1;
+  overflow-y: auto; /* Make content scrollable if it overflows */
+  padding-bottom: 16px; /* Add some padding at the bottom */
 }
 
 .search-input {
@@ -23,11 +54,14 @@
   cursor: pointer;
   height: 100%;
   transition: all 0.3s ease;
+  background-color: #e6f7ff; /* Light blue for service/category cards */
+  border-radius: 8px;
+  border: 1px solid #91d5ff;
 }
 
 .product-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .product-card .ant-card-body {
@@ -59,7 +93,7 @@
 }
 
 .proceed-button {
-  margin-top: 16px;
+  margin-top: auto; /* Pushes the button to the bottom of the flex container */
   height: 40px;
   font-size: 16px;
 }
@@ -73,6 +107,20 @@
 .pending-task-btn:hover, .pending-task-btn:focus {
   background: #0958d9 !important;
   color: #fff !important;
+}
+
+.cart-section {
+  background-color: #f6ffed; /* Light green for the cart section */
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px - 32px); /* Adjust based on header height and padding */
+}
+
+.cart-table-container {
+  flex: 1;
+  overflow-y: auto; /* Make cart table scrollable */
 }
 
 /* Ultra Small Devices (360px and below) */
@@ -238,35 +286,31 @@
     font-size: clamp(14px, 3vw, 18px);
   }
   .order-summary {
-    text-align: center;
-    padding: 2vw 0;
-    font-size: clamp(14px, 3vw, 18px);
+    padding: 3vw 0;
   }
   .proceed-button {
-    width: 100%;
-    height: 48px;
+    height: 50px;
     font-size: clamp(16px, 4vw, 20px);
-    border-radius: 8px;
   }
   .ant-table {
-    font-size: clamp(12px, 2vw, 14px);
+    font-size: clamp(12px, 3vw, 15px);
   }
   .ant-table-cell {
-    padding: 1vw !important;
+    padding: 2vw;
   }
   .ant-btn {
-    min-height: 40px;
-    padding: 0 12px;
-    font-size: clamp(14px, 3vw, 18px);
-    border-radius: 6px;
+    height: 40px;
+    padding: 0 16px;
+    font-size: clamp(14px, 3.5vw, 18px);
+  }
+  .ant-space {
+    gap: 1vw !important;
   }
 }
 
-/* Tablet Responsive Styles */
 @media (min-width: 769px) and (max-width: 1024px) {
   .product-card {
-    margin-bottom: 12px;
-    border-radius: 12px;
+    height: 140px;
   }
   .product-title {
     font-size: 15px;
@@ -277,33 +321,65 @@
   .ant-table {
     font-size: 14px;
   }
-}
-
-/* Ensure buttons are easily tappable on mobile */
-@media (max-width: 768px) {
-  .ant-btn {
-    min-width: 44px;
-    min-height: 44px;
-    font-size: clamp(14px, 4vw, 18px);
-    border-radius: 6px;
-  }
-  .ant-space {
-    gap: 8px !important;
+  .ant-table-cell {
+    padding: 14px;
   }
 }
 
+/* Default styles for larger screens */
 @media (min-width: 1025px) {
   .pos-container,
   .products-section,
-  .cart-section,
-  .ant-row,
-  .ant-col {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box;
+  .cart-section {
+    max-width: 1400px;
+    margin: 0 auto;
   }
   body {
-    overflow-x: hidden !important;
+    overflow-x: hidden;
   }
+}
+
+.ant-table th:last-child,
+.ant-table td:last-child {
+  text-align: center;
+}
+
+.products-section + .products-section {
+  margin-top: 24px;
+}
+
+.product-card .product-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.delete-btn.ant-btn-text.ant-btn-dangerous {
+  color: #ff4d4f;
+}
+
+.delete-btn.ant-btn-text.ant-btn-dangerous:hover {
+  color: #ff7875;
+  background-color: transparent;
+}
+
+.delete-btn.ant-btn-text.ant-btn-dangerous:focus,
+.delete-btn.ant-btn-text.ant-btn-dangerous:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.quantity-btn {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+.quantity-btn:hover {
+  border-color: #40a9ff;
+  color: #1890ff;
+}
+
+.quantity-text {
+  font-weight: 500;
 } 

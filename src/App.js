@@ -4,13 +4,15 @@ import { ConfigProvider } from 'antd';
 import MainLayout from './Desktop/layouts/MainLayout';
 import Dashboard from './Desktop/pages/Dashboard';
 import POS from './Desktop/pages/POS';
-import Products from './Desktop/pages/Products';
+import Services from './Desktop/pages/Services';
 import Transactions from './Desktop/pages/Transactions';
 import Settings from './Desktop/pages/Settings';
 import SignIn from './Desktop/pages/SignIn';
 import ForgotPassword from './Desktop/pages/ForgotPassword';
 import PageNotFound from './Desktop/layouts/PageNotFound';
 import Customers from './Desktop/pages/Customer';
+import OutgoingPayments from './Desktop/pages/OutgoingPayments';
+import OutgoingPaymentCategories from './Desktop/pages/OutgoingPaymentCategories';
 import { PageTitleProvider } from './Desktop/layouts/PageTitleContext';
 import ResetPassword from './Desktop/pages/ResetPassword';
 // Mobile imports
@@ -94,9 +96,11 @@ function App() {
                 <Route path="/pagenotfound" element={<PageNotFound />} />
                 <Route path="/dashboard" element={<ProtectedRoute><MainLayout><Dashboard /></MainLayout></ProtectedRoute>} />
                 <Route path="/pos" element={<ProtectedRoute><MainLayout><POS /></MainLayout></ProtectedRoute>} />
-                <Route path="/products" element={<ProtectedRoute><MainLayout><Products /></MainLayout></ProtectedRoute>} />
+                <Route path="/services" element={<ProtectedRoute><MainLayout><Services /></MainLayout></ProtectedRoute>} />
                 <Route path="/customers" element={<ProtectedRoute><MainLayout><Customers /></MainLayout></ProtectedRoute>} />
                 <Route path="/transactions" element={<ProtectedRoute><MainLayout><Transactions /></MainLayout></ProtectedRoute>} />
+                <Route path="/outgoing-payments" element={<ProtectedRoute><MainLayout><OutgoingPayments /></MainLayout></ProtectedRoute>} />
+                <Route path="/outgoing-payment-categories" element={<ProtectedRoute><MainLayout><OutgoingPaymentCategories /></MainLayout></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
                 <Route path="/" element={<Navigate to="/signin" replace />} />
                 <Route path="*" element={<Navigate to="/pagenotfound" replace />} />

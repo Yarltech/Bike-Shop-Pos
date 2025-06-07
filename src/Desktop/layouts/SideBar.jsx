@@ -8,6 +8,8 @@ import {
   HistoryOutlined,
   LogoutOutlined,
   UserOutlined,
+  DollarOutlined,
+  TagsOutlined,
 } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -70,10 +72,10 @@ const SideBar = ({ isMobile, collapsed, pageTitle }) => {
       onClick: () => navigate('/pos'),
     },
     {
-      key: '/products',
+      key: '/services',
       icon: <ToolOutlined />,
-      label: 'Products',
-      onClick: () => navigate('/products'),
+      label: 'Services',
+      onClick: () => navigate('/services'),
     },
     {
       key: '/customers',
@@ -86,6 +88,18 @@ const SideBar = ({ isMobile, collapsed, pageTitle }) => {
       icon: <HistoryOutlined />,
       label: 'Transactions',
       onClick: () => navigate('/transactions'),
+    },
+    {
+      key: '/outgoing-payments',
+      icon: <DollarOutlined />,
+      label: 'Payments',
+      onClick: () => navigate('/outgoing-payments'),
+    },
+    {
+      key: '/outgoing-payment-categories',
+      icon: <TagsOutlined />,
+      label: 'Payment Category',
+      onClick: () => navigate('/outgoing-payment-categories'),
     },
     {
       key: '/settings',
@@ -137,6 +151,7 @@ const SideBar = ({ isMobile, collapsed, pageTitle }) => {
         collapsible
         collapsed={collapsed}
         breakpoint="lg"
+        width={220}
         collapsedWidth={80}
         className="sidebar-container"
       >

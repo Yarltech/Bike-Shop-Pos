@@ -1,29 +1,58 @@
-import React, { useState, useRef } from 'react';
-import { Row, Col, Card, Button, Input, Table, Typography, Space } from 'antd';
-import { SearchOutlined, DeleteOutlined, PrinterOutlined } from '@ant-design/icons';
+import React, { useState, useRef, useEffect } from 'react';
+import { Row, Col, Card, Button, Table, Typography, Space, message } from 'antd';
+import { DeleteOutlined, PrinterOutlined, ReloadOutlined } from '@ant-design/icons';
 import '../styles/POS.css';
 import useHeadingObserver from '../layouts/useHeadingObserver';
+import { getAllServicesPaginated } from '../../API/ServiceApi';
+import { getAllOutgoingPaymentCategories } from '../../API/OutgoingPaymentCategoryApi';
 
 const { Title } = Typography;
 
 const POS = () => {
   const [cart, setCart] = useState([]);
-  const [searchText, setSearchText] = useState('');
   const headingRef = useRef(null);
-  useHeadingObserver(headingRef);
-  
-  // Sample products data with LKR prices
-  const products = [
-    { id: 1, name: 'Bike Chain', icon: '🚲' },
-    { id: 2, name: 'Brake Pads', icon: '🛑' },
-    { id: 3, name: 'Inner Tube', icon: '⭕' },
-    { id: 4, name: 'Tire', icon: '🛞' },
-    { id: 5, name: 'Handlebar Grip', icon: '🤚' },
-  ];
+  const [services, setServices] = useState([]);
+  const [outgoingPaymentCategories, setOutgoingPaymentCategories] = useState([]);
+  const [loadingServices, setLoadingServices] = useState(false);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  useHeadingObserver(headingRef);
+
+  const fetchServices = async () => {
+    setLoadingServices(true);
+    try {
+      const response = await getAllServicesPaginated(1, 100, true); // Fetch all active services
+      if (response && response.payload) {
+        setServices(response.payload);
+      } else {
+        message.error(response.errorDescription || 'Failed to fetch services.');
+      }
+    } catch (error) {
+      message.error('Error fetching services');
+    }
+    setLoadingServices(false);
+  };
+
+  const fetchOutgoingPaymentCategories = async () => {
+    setLoadingCategories(true);
+    try {
+      const response = await getAllOutgoingPaymentCategories();
+      if (response && response.responseDto) {
+        setOutgoingPaymentCategories(response.responseDto);
+      } else {
+        message.error(response.errorDescription || 'Failed to fetch outgoing payment categories.');
+      }
+    } catch (error) {
+      message.error('Error fetching outgoing payment categories');
+    }
+    setLoadingCategories(false);
+  };
+
+  useEffect(() => {
+    fetchServices();
+    fetchOutgoingPaymentCategories();
+  }, []);
 
   const addToCart = (product) => {
     const existingItem = cart.find(item => item.id === product.id);
@@ -108,30 +137,36 @@ const POS = () => {
     },
   ];
 
+  useEffect(() => {
+    const calculateTotalAmount = () => {
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      setTotalAmount(total);
+    };
+    calculateTotalAmount();
+  }, [cart]);
+
+  const handleRefresh = () => {
+    setCart([]);
+    message.success('Table refreshed!');
+  };
+
   return (
     <div className="pos-container">
       <h1 ref={headingRef} className="visually-hidden">POS</h1>
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={14}>
           <Card className="products-section">
-            <Input
-              placeholder="Search products..."
-              prefix={<SearchOutlined />}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="search-input"
-              size="large"
-            />
-            <Row gutter={[8, 8]}>
-              {filteredProducts.map(product => (
-                <Col xs={12} sm={8} md={6} key={product.id}>
+            <Title level={4} style={{ marginBottom: 16 }}>Services</Title>
+            <Row gutter={[8, 8]} loading={loadingServices}>
+              {services.map(service => (
+                <Col xs={12} sm={8} md={6} key={service.id}>
                   <Card
                     hoverable
-                    onClick={() => addToCart(product)}
+                    onClick={() => addToCart(service)}
                     className="product-card"
                   >
-                    <div className="product-icon">{product.icon}</div>
-                    <Title level={5} className="product-title">{product.name}</Title>
+                    <div className="product-icon">{service.icon}</div>
+                    <Title level={5} className="product-title">{service.name}</Title>
                   </Card>
                 </Col>
               ))}
@@ -139,16 +174,16 @@ const POS = () => {
           </Card>
 
           <Card className="products-section" style={{ marginTop: 24 }}>
-            <Title level={4} style={{ marginBottom: 16 }}>Outgoing Payment</Title>
-            <Row gutter={[8, 8]}>
-              {["Parts", "Painting", "Stickers", "Salary"].map((item) => (
-                <Col xs={12} sm={8} md={6} key={item}>
+            <Title level={4} style={{ marginBottom: 16 }}>Outgoing Payment Categories</Title>
+            <Row gutter={[8, 8]} loading={loadingCategories}>
+              {outgoingPaymentCategories.map((category) => (
+                <Col xs={12} sm={8} md={6} key={category.id}>
                   <Card
                     hoverable
                     className="product-card"
                     onClick={() => {/* handle click for each item if needed */}}
                   >
-                    <Title level={5} className="product-title" style={{ textAlign: 'center' }}>{item}</Title>
+                    <Title level={5} className="product-title" style={{ textAlign: 'center' }}>{category.name}</Title>
                   </Card>
                 </Col>
               ))}
@@ -159,9 +194,14 @@ const POS = () => {
           <Card className="cart-section">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <Title level={4} style={{ margin: 0 }}>Current Order</Title>
-              <Button type="default" className="pending-task-btn">
-                Pending Task
-              </Button>
+              <Space>
+                <Button type="default" icon={<ReloadOutlined />} onClick={handleRefresh}>
+                  Refresh
+                </Button>
+                <Button type="default" className="pending-task-btn">
+                  Pending Task
+                </Button>
+              </Space>
             </div>
             <div className="cart-table-container">
               <Table
@@ -173,14 +213,27 @@ const POS = () => {
                 size="small"
               />
             </div>
+            <div className="order-summary" style={{ textAlign: 'right', marginBottom: 16 }}>
+              <Title level={4} style={{ margin: 0 }}>Total: LKR{totalAmount.toFixed(2)}</Title>
+            </div>
             <Button
               type="primary"
               block
               icon={<PrinterOutlined />}
-              className="proceed-button"
+              className="advance-payment-button"
               size="large"
             >
-              Proceed
+              Advance Payment
+            </Button>
+            <Button
+              type="primary"
+              block
+              icon={<PrinterOutlined />}
+              className="final-payment-button"
+              size="large"
+              style={{ marginTop: 8, backgroundColor: '#52c41a', borderColor: '#52c41a' }}
+            >
+              Final Payment
             </Button>
           </Card>
         </Col>

@@ -1,0 +1,154 @@
+.outgoing-payments-container {
+  padding: 24px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.outgoing-payments-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.outgoing-payments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+
+.outgoing-payments-title {
+  margin: 0 !important;
+  color: #1a1a1a;
+}
+
+.add-payment-button {
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.add-payment-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+}
+
+.outgoing-payments-table {
+  margin-top: 16px;
+}
+
+.payment-description,
+.payment-datetime,
+.payment-amount,
+.payment-category,
+.payment-method {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.action-button {
+  transition: all 0.3s ease;
+}
+
+.action-button:hover {
+  transform: scale(1.1);
+}
+
+.action-button.edit {
+  background-color: #1890ff;
+}
+
+/* Modal Styles */
+.payment-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.modal-title-icon {
+  font-size: 24px;
+}
+
+.payment-form .ant-form-item-label {
+  font-weight: 500;
+}
+
+.payment-form .ant-input,
+.payment-form .ant-input-textarea,
+.payment-form .ant-select-selector,
+.payment-form .ant-picker {
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
+.payment-form .ant-input:hover,
+.payment-form .ant-input-textarea:hover,
+.payment-form .ant-select-selector:hover,
+.payment-form .ant-picker:hover {
+  border-color: #40a9ff;
+}
+
+.payment-form .ant-input:focus,
+.payment-form .ant-input-textarea:focus,
+.payment-form .ant-select-selector:focus,
+.payment-form .ant-picker-focused {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+/* Table Responsive Styles */
+.table-responsive {
+  overflow-x: auto;
+  margin: 0 -24px;
+  padding: 0 24px;
+}
+
+/* Pagination Styles */
+.ant-pagination {
+  margin: 16px 0 !important;
+}
+
+.ant-pagination-item {
+  border-radius: 6px;
+}
+
+.ant-pagination-item-active {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.ant-pagination-item-active a {
+  color: white;
+}
+
+/* Tooltip Styles */
+.ant-tooltip {
+  max-width: 300px;
+}
+
+.ant-tooltip-inner {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* Animation for table rows */
+.ant-table-tbody > tr {
+  transition: all 0.3s ease;
+}
+
+.ant-table-tbody > tr:hover {
+  background-color: #f0f7ff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+} 
