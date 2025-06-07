@@ -1,74 +1,77 @@
-import React, { useState, useRef } from 'react';
-import { Table, Card, DatePicker, Space, Button, Tag } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Table, Card, DatePicker, Space, Button, Tag, Typography, message } from 'antd';
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import '../styles/Transactions.css';
 import useHeadingObserver from '../layouts/useHeadingObserver';
+import { getAllTransactionsPaginated } from '../../API/TransactionApi';
+import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
+const { Title } = Typography;
 
 const Transactions = () => {
   const [dateRange, setDateRange] = useState(null);
   const headingRef = useRef(null);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRecords, setTotalRecords] = useState(0);
+
   useHeadingObserver(headingRef);
 
-  // Sample transactions data
-  const transactions = [
-    {
-      id: 1,
-      date: '2024-03-15 14:30',
-      items: [
-        { name: 'Bike Chain', quantity: 1, price: 15.99 },
-        { name: 'Brake Pads', quantity: 2, price: 12.99 },
-      ],
-      total: 41.97,
-      paymentMethod: 'Credit Card',
-      status: 'Completed',
-    },
-    {
-      id: 2,
-      date: '2024-03-15 15:45',
-      items: [
-        { name: 'Inner Tube', quantity: 1, price: 8.99 },
-        { name: 'Tire', quantity: 1, price: 29.99 },
-      ],
-      total: 38.98,
-      paymentMethod: 'Cash',
-      status: 'Completed',
-    },
-  ];
+  const fetchTransactions = async (page, size) => {
+    setLoading(true);
+    try {
+      const response = await getAllTransactionsPaginated(page, size);
+      if (response && response.responseDto) {
+        setTransactions(response.responseDto.payload);
+        setTotalRecords(response.responseDto.totalRecords);
+      } else {
+        message.error(response.errorDescription || 'Failed to fetch transactions');
+      }
+    } catch (error) {
+      message.error('Error fetching transactions');
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchTransactions(currentPage, pageSize);
+  }, [currentPage, pageSize]);
 
   const columns = [
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
-      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+      title: 'Transaction No',
+      dataIndex: 'transactionNo',
+      key: 'transactionNo',
+      width: 150,
     },
     {
-      title: 'Items',
-      dataIndex: 'items',
-      key: 'items',
-      render: (items) => (
-        <ul className="transaction-items">
-          {items.map((item, index) => (
-            <li key={index}>
-              {item.quantity}x {item.name} (${item.price.toFixed(2)})
-            </li>
-          ))}
-        </ul>
-      ),
+      title: 'Customer',
+      dataIndex: ['customerDto', 'name'],
+      key: 'customer',
+      width: 150,
+    },
+    {
+      title: 'Vehicle',
+      dataIndex: ['customerDto', 'vehicleNumber'],
+      key: 'vehicle',
+      width: 120,
     },
     {
       title: 'Total',
-      dataIndex: 'total',
+      dataIndex: 'totalAmount',
       key: 'total',
-      render: (total) => `LKR${total.toFixed(2)}`,
-      sorter: (a, b) => a.total - b.total,
+      render: (total) => `LKR ${total.toFixed(2)}`,
+      sorter: (a, b) => a.totalAmount - b.totalAmount,
+      width: 120,
     },
     {
       title: 'Payment Method',
-      dataIndex: 'paymentMethod',
+      dataIndex: ['paymentMethodDto', 'name'],
       key: 'paymentMethod',
+      width: 150,
     },
     {
       title: 'Status',
@@ -79,6 +82,7 @@ const Transactions = () => {
           {status}
         </Tag>
       ),
+      width: 120,
     },
     {
       title: 'Actions',
@@ -89,20 +93,91 @@ const Transactions = () => {
             type="primary"
             icon={<DownloadOutlined />}
             size="small"
-          >
-            Receipt
-          </Button>
+            shape="circle"
+          />
         </Space>
       ),
+      width: 80,
     },
   ];
 
+  const expandedRowRender = (record) => {
+    const itemColumns = [
+      { 
+        title: 'Service', 
+        dataIndex: ['serviceDto', 'name'], 
+        key: 'service',
+        render: (text, record) => (
+          <Space>
+            <span>{record.serviceDto.icon}</span>
+            <span>{text}</span>
+          </Space>
+        )
+      },
+      { title: 'Description', dataIndex: 'description', key: 'description' },
+      { 
+        title: 'Amount', 
+        dataIndex: 'amount', 
+        key: 'amount', 
+        render: (amount) => `LKR ${amount.toFixed(2)}` 
+      },
+    ];
+
+    return (
+      <div className="transaction-details-container">
+        <Card size="small" title="Payment Details" className="payment-details-card">
+          <div className="payment-details-grid">
+            <div className="payment-detail-item">
+              <span className="payment-label">Advance Payment:</span>
+              <span className="payment-value">
+                {record.advancePaymentAmount ? `LKR ${record.advancePaymentAmount.toFixed(2)}` : 'Not Done'}
+              </span>
+            </div>
+            <div className="payment-detail-item">
+              <span className="payment-label">Advance Payment Date:</span>
+              <span className="payment-value">
+                {record.advancePaymentDateTime ? dayjs(record.advancePaymentDateTime).format('YYYY-MM-DD HH:mm') : 'Not Done'}
+              </span>
+            </div>
+            <div className="payment-detail-item">
+              <span className="payment-label">Final Payment:</span>
+              <span className="payment-value">
+                {record.finalPaymentAmount ? `LKR ${record.finalPaymentAmount.toFixed(2)}` : 'Not Done'}
+              </span>
+            </div>
+            <div className="payment-detail-item">
+              <span className="payment-label">Final Payment Date:</span>
+              <span className="payment-value">
+                {record.finalPaymentDateTime ? dayjs(record.finalPaymentDateTime).format('YYYY-MM-DD HH:mm') : 'Not Done'}
+              </span>
+            </div>
+          </div>
+        </Card>
+
+        <Card size="small" title="Transaction Details" className="transaction-details-card">
+          <Table
+            columns={itemColumns}
+            dataSource={record.transactionDetailsList}
+            pagination={false}
+            rowKey="id"
+            className="expanded-items-table"
+          />
+        </Card>
+      </div>
+    );
+  };
+
+  const handleTableChange = (pagination) => {
+    setCurrentPage(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
+
   const filteredTransactions = dateRange
     ? transactions.filter(transaction => {
-        const transactionDate = new Date(transaction.date);
+        const transactionDate = dayjs(transaction.advancePaymentDateTime);
         return (
-          transactionDate >= dateRange[0].startOf('day').toDate() &&
-          transactionDate <= dateRange[1].endOf('day').toDate()
+          transactionDate.isAfter(dateRange[0].startOf('day')) &&
+          transactionDate.isBefore(dateRange[1].endOf('day'))
         );
       })
     : transactions;
@@ -110,16 +185,19 @@ const Transactions = () => {
   return (
     <div className="transactions-container">
       <h1 ref={headingRef} className="visually-hidden">Transactions</h1>
-      <Card>
+      <Card className="transactions-card">
         <div className="transactions-header">
+          <Title level={2} className="transactions-title">Transaction History</Title>
           <div className="search-controls">
             <RangePicker
               onChange={setDateRange}
               className="date-range-picker"
+              size="large"
             />
             <Button
               type="primary"
               icon={<SearchOutlined />}
+              size="large"
             >
               Search
             </Button>
@@ -131,7 +209,17 @@ const Transactions = () => {
             columns={columns}
             dataSource={filteredTransactions}
             rowKey="id"
-            pagination={{ pageSize: 10 }}
+            pagination={{
+              current: currentPage,
+              pageSize: pageSize,
+              total: totalRecords,
+              showSizeChanger: true,
+              showTotal: (total) => `Total ${total} transactions`,
+              onChange: handleTableChange,
+            }}
+            expandable={{ expandedRowRender }}
+            loading={loading}
+            className="transactions-table"
           />
         </div>
       </Card>
