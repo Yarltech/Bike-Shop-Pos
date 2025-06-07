@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { getAuthToken } from '../utils/auth';
+import { BASE_BACKEND_URL } from './config';
 
-const BASE_URL = 'http://localhost:8080/transaction';
 
 // Save a new transaction
 export const saveTransaction = async (transactionData) => {
     try {
-        const response = await axios.post(`${BASE_URL}/save`, transactionData, {
+        const response = await axios.post(`${BASE_BACKEND_URL}/transaction/save`, transactionData, {
             headers: {
                 'Authorization': `Bearer ${getAuthToken()}`,
                 'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ export const saveTransaction = async (transactionData) => {
 // Update an existing transaction
 export const updateTransaction = async (transactionData) => {
     try {
-        const response = await axios.put(`${BASE_URL}/update`, transactionData, {
+        const response = await axios.put(`${BASE_BACKEND_URL}/transaction/update`, transactionData, {
             headers: {
                 'Authorization': `Bearer ${getAuthToken()}`,
                 'Content-Type': 'application/json'
@@ -42,7 +42,7 @@ export const updateTransaction = async (transactionData) => {
 // Get all transactions with pagination
 export const getAllTransactionsPaginated = async (pageNumber, pageSize) => {
     try {
-        const response = await axios.get(`${BASE_URL}/getAllPage`, {
+        const response = await axios.get(`${BASE_BACKEND_URL}/transaction/getAllPage`, {
             params: {
                 pageNumber,
                 pageSize
@@ -63,7 +63,7 @@ export const getAllTransactionsPaginated = async (pageNumber, pageSize) => {
 // Get transactions by customer ID with pagination
 export const getTransactionsByCustomer = async (pageNumber, pageSize, customerId) => {
     try {
-        const response = await axios.get(`${BASE_URL}/getAllPageByCustomer`, {
+        const response = await axios.get(`${BASE_BACKEND_URL}/transaction/getAllPageByCustomer`, {
             params: {
                 pageNumber,
                 pageSize,
@@ -85,7 +85,7 @@ export const getTransactionsByCustomer = async (pageNumber, pageSize, customerId
 // Get transactions by status with pagination
 export const getTransactionsByStatus = async (pageNumber, pageSize, status) => {
     try {
-        const response = await axios.get(`${BASE_URL}/getAllPageByStatus`, {
+        const response = await axios.get(`${BASE_BACKEND_URL}/transaction/getAllPageByStatus`, {
             params: {
                 pageNumber,
                 pageSize,
@@ -107,7 +107,7 @@ export const getTransactionsByStatus = async (pageNumber, pageSize, status) => {
 // Get transactions by transaction number with pagination
 export const getTransactionsByTransactionNo = async (pageNumber, pageSize, transactionNo) => {
     try {
-        const response = await axios.get(`${BASE_URL}/getAllPageByTransactionNo`, {
+        const response = await axios.get(`${BASE_BACKEND_URL}/transaction/getAllPageByTransactionNo`, {
             params: {
                 pageNumber,
                 pageSize,
@@ -129,7 +129,7 @@ export const getTransactionsByTransactionNo = async (pageNumber, pageSize, trans
 // Update transaction details status
 export const updateTransactionDetailsStatus = async (transactionDetailsId, status) => {
     try {
-        const response = await axios.put(`${BASE_URL}/updateTransactionDetailsStatus`, null, {
+        const response = await axios.put(`${BASE_BACKEND_URL}/transaction/updateTransactionDetailsStatus`, null, {
             params: {
                 transactionDetailsId,
                 status

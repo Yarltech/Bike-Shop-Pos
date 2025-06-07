@@ -28,6 +28,7 @@ import MobilePageNotFound from './Mobile/pages/MobilePageNotFound';
 import MobileLostConnection from './Mobile/pages/MobileLostConnection';
 import MobileUnderMaintenance from './Mobile/pages/MobileUnderMaintenance';
 import MobileResetPassword from './Mobile/pages/MobileResetPassword';
+import TransactionDetails from './Mobile/pages/TransactionDetails';
 // Add more mobile pages as you create them
 
 // A simple authentication check (replace with your actual auth logic)
@@ -77,8 +78,9 @@ function App() {
                 <Route element={<MobileIndex />}>
                   <Route path="/home" element={<MobileDashboard />} />
                   <Route path="/pos" element={<MobilePos />} />
-                  <Route path="/analytics" element={<MobileInventory />} />
-                  <Route path="/history" element={<MobileTransaction />} />
+                  <Route path="/customer" element={<MobileInventory />} />
+                  <Route path="/transaction" element={<MobileTransaction />} />
+                  <Route path="/transaction/:id" element={<TransactionDetails />} />
                   <Route path="/profile" element={<MobileSetting />} />
                 </Route>
                 <Route path="/404" element={<MobilePageNotFound />} />

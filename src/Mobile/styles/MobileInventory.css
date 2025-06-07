@@ -1,11 +1,13 @@
 .mobile-inventory {
   padding: 0 16px;
+  background: #f8f9fa;
+  padding-bottom: 56px;
 }
 
 .mobile-inventory h2 {
   text-align: left;
-  color: #333;
-  margin: 24px 0;
+  color: #1a1a1a;
+  margin: 24px 0 12px 0;
   font-size: 1.75rem;
   font-weight: 600;
   position: relative;
@@ -24,12 +26,301 @@
   border-radius: 2px;
 }
 
+.mobile-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 32px;
+  margin-bottom: 18px;
+  border: 1px solid #e0e7ef;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+  transition: border 0.2s;
+}
+.mobile-search-input:focus {
+  border: 1.5px solid #2563eb;
+}
+
+.mobile-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.mobile-customer-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 16px 18px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1px solid #f0f2f7;
+}
+.mobile-customer-card:hover {
+  box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.mobile-customer-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mobile-customer-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e8f0fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+.mobile-customer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mobile-customer-initials {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.mobile-customer-name {
+  font-weight: 700;
+  color: #222b45;
+  font-size: 1.08rem;
+}
+.mobile-customer-vehicle {
+  color: #8a94a6;
+  font-size: 0.97rem;
+  margin-top: 2px;
+}
+
+.mobile-customer-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-inventory-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin: 20px 0;
+}
+
+.mobile-inventory-error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #dc3545;
+  font-size: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin: 20px 0;
+  border: 1px solid #ffcdd2;
+}
+
+/* Modal Styles */
+.mobile-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 41, 59, 0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mobile-modal {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(37,99,235,0.18);
+  padding: 0 0 22px 0;
+  min-width: 90vw;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: modalIn 0.2s cubic-bezier(.4,2,.6,1) 1;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.mobile-modal-header {
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+  border-radius: 20px 20px 0 0;
+  padding: 24px 22px 16px 22px;
+  color: #fff;
+  position: relative;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mobile-modal-header h3 {
+  margin: 0 auto;
+  font-size: 1.22rem;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.mobile-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 2;
+}
+.mobile-modal-close:hover {
+  background: rgba(255,255,255,0.32);
+}
+.mobile-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 22px 0 22px;
+}
+.mobile-modal-row-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f8faff;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 0px;
+  box-shadow: 0 1px 4px rgba(37,99,235,0.06);
+  border: 1px solid #e0e7ef;
+}
+.mobile-modal-label-card {
+  color: #2563eb;
+  font-size: 1.04rem;
+  font-weight: 700;
+  min-width: 120px;
+  margin-right: 10px;
+  text-align: left;
+}
+.mobile-modal-value-card {
+  color: #222b45;
+  font-size: 1.04rem;
+  background: #fff;
+  border-radius: 7px;
+  padding: 4px 12px;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(37,99,235,0.03);
+  border: 1px solid #e0e7ef;
+}
+
+.mobile-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px 0 0 0;
+}
+.mobile-pagination-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+  box-shadow: 0 1px 4px rgba(37,99,235,0.08);
+}
+.mobile-pagination-btn:disabled {
+  background: #bcd0fa;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.mobile-pagination-info {
+  color: #2563eb;
+  font-size: 1.01rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
 @media (max-width: 400px) {
   .mobile-inventory {
     padding: 0 8px;
+    padding-bottom: 70px;
   }
   .mobile-inventory h2 {
-    margin: 16px 0;
+    margin: 16px 0 10px 0;
     font-size: 1.5rem;
+  }
+  .mobile-search-input {
+    padding: 10px 12px;
+    font-size: 0.97rem;
+    margin-top: 20px;
+  }
+  .mobile-list-container {
+    margin-top: 4px;
+  }
+  .mobile-customer-card {
+    padding: 12px 10px;
+  }
+  .mobile-customer-avatar {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+  .mobile-modal {
+    padding: 0 0 12px 0;
+    min-width: 98vw;
+    max-width: 98vw;
+  }
+  .mobile-modal-header {
+    padding: 18px 8px 12px 8px;
+  }
+  .mobile-modal-content {
+    padding: 12px 8px 0 8px;
+    gap: 10px;
+  }
+  .mobile-modal-row-card {
+    padding: 8px 8px;
+    font-size: 0.97rem;
+  }
+  .mobile-modal-label-card, .mobile-modal-value-card {
+    font-size: 0.97rem;
+    min-width: 80px;
+    padding: 3px 7px;
+  }
+  .mobile-pagination {
+    gap: 8px;
+    margin: 18px 0 0 0;
+  }
+  .mobile-pagination-btn {
+    padding: 7px 12px;
+    font-size: 0.97rem;
+  }
+  .mobile-pagination-info {
+    font-size: 0.97rem;
   }
 } 
