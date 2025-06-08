@@ -8,7 +8,6 @@ const initialValues = {
   name: '',
   email: '',
   mobile: '',
-  password: '',
 };
 
 const Settings = () => {
@@ -31,7 +30,6 @@ const Settings = () => {
           name: userObj.name || '',
           email: userObj.emailAddress || '',
           mobile: userObj.mobileNumber || '',
-          password: userObj.password || '',
         });
       }
     }
@@ -53,7 +51,6 @@ const Settings = () => {
         name: originalUser.name || '',
         email: originalUser.emailAddress || '',
         mobile: originalUser.mobileNumber || '',
-        password: originalUser.password || '',
       });
     }
     setIsEditing(false);
@@ -68,7 +65,7 @@ const Settings = () => {
       name: user.name,
       emailAddress: user.email || user.emailAddress,
       mobileNumber: user.mobile || user.mobileNumber,
-      password: user.password || '',
+      password: originalUser.password,
     };
     const result = await updateUser(updatedUser);
     console.log('updateUser result:', result);
@@ -93,6 +90,7 @@ const Settings = () => {
     >
       <div className="profile-logo-container">
         <img src={require('../../img/Admin.jpg')} alt="Profile" className="profile-logo" />
+        <div className="profile-role">{user?.name || 'Name'}</div>
         <div className="profile-role">{user?.userRoleDto?.userRole || 'Role'}</div>
       </div>
       <Row gutter={16}>
@@ -131,17 +129,6 @@ const Settings = () => {
               readOnly={!isEditing}
               value={user?.mobileNumber || ''}
               onChange={e => handleInputChange('mobileNumber', e.target.value)}
-            />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col xs={24} md={24}>
-          <Form.Item name="password" label="Password" rules={[{ required: true, message: 'Please enter password' }]}> 
-            <Input.Password
-              readOnly={!isEditing}
-              value={user?.password || ''}
-              onChange={e => handleInputChange('password', e.target.value)}
             />
           </Form.Item>
         </Col>
