@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Space, message, Card, Typography, Tooltip } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import '../styles/OutgoingPaymentCategories.css';
 import useHeadingObserver from '../layouts/useHeadingObserver';
 import { saveOutgoingPaymentCategory, updateOutgoingPaymentCategory, getAllOutgoingPaymentCategories, updateOutgoingPaymentCategoryStatus } from '../../API/OutgoingPaymentCategoryApi';
@@ -180,8 +180,14 @@ const OutgoingPaymentCategories = () => {
 
       <Modal
         title={
-          <div className="modal-title">
-            <span className="modal-title-icon">{editingCategory ? '✏️' : '➕'}</span>
+          <div style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: '#1677ff',
+            borderBottom: '2px solid #e6f7ff',
+            paddingBottom: 12,
+            marginBottom: 8
+          }}>
             {editingCategory ? 'Edit Category' : 'Add New Category'}
           </div>
         }
@@ -189,28 +195,53 @@ const OutgoingPaymentCategories = () => {
         onOk={handleModalOk}
         onCancel={() => setIsModalVisible(false)}
         width={500}
-        className="category-modal"
+        okButtonProps={{
+          style: {
+            background: '#1677ff',
+            borderColor: '#1677ff',
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            boxShadow: '0 2px 8px #e6f7ff'
+          }
+        }}
+        cancelButtonProps={{
+          style: {
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            borderColor: '#1677ff',
+            color: '#1677ff'
+          }
+        }}
+        styles={{
+          body: {
+            padding: '24px 32px',
+            background: '#f5faff',
+            borderRadius: 8
+          }
+        }}
         okText={editingCategory ? 'Update Category' : 'Add Category'}
         cancelText="Cancel"
       >
         <Form
           form={form}
           layout="vertical"
-          className="category-form"
         >
           <Form.Item
             name="name"
-            label={
-              <span>
-                Category Name
-                <Tooltip title="Enter the name of the outgoing payment category">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </span>
-            }
-            rules={[{ required: true, message: 'Please enter category name' }]}
-          >
-            <Input placeholder="e.g., Utilities" />
+            label={<span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>Category Name</span>}
+            rules={[{ required: true, message: 'Please enter category name' }]}>
+            <Input 
+              placeholder="e.g., Office Supplies"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            />
           </Form.Item>
         </Form>
       </Modal>

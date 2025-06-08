@@ -26,7 +26,7 @@ export const updateOutgoingPayment = async (paymentData) => {
     if (!accessToken) {
       return { errorDescription: "Authentication required. Please login again." };
     }
-    const response = await axios.post(`${BASE_BACKEND_URL}/outgoingPayment/update`, paymentData, {
+    const response = await axios.put(`${BASE_BACKEND_URL}/outgoingPayment/update`, paymentData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",

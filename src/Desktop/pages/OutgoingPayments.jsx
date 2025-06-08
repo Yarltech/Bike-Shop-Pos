@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, Space, message, Card, Typography, Tooltip, Select, DatePicker } from 'antd';
+import { Table, Button, Modal, Form, Input, InputNumber, Space, message, Card, Typography, Tooltip, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import '../styles/OutgoingPayments.css';
 import useHeadingObserver from '../layouts/useHeadingObserver';
@@ -167,7 +167,7 @@ const OutgoingPayments = () => {
         ...values,
         outgoingPaymentCategoryDto: { id: values.outgoingPaymentCategoryDto },
         paymentMethodDto: { id: values.paymentMethodDto },
-        dateTime: values.dateTime.format('YYYY-MM-DDTHH:mm:ss'), // Format to ISO 8601
+        dateTime: editingPayment ? editingPayment.dateTime : dayjs().format('YYYY-MM-DDTHH:mm:ss'),
       };
 
       let response;
@@ -238,8 +238,14 @@ const OutgoingPayments = () => {
 
       <Modal
         title={
-          <div className="modal-title">
-            <span className="modal-title-icon">{editingPayment ? '✏️' : '➕'}</span>
+          <div style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: '#1677ff',
+            borderBottom: '2px solid #e6f7ff',
+            paddingBottom: 12,
+            marginBottom: 8
+          }}>
             {editingPayment ? 'Edit Payment' : 'Add New Payment'}
           </div>
         }
@@ -247,19 +253,45 @@ const OutgoingPayments = () => {
         onOk={handleModalOk}
         onCancel={() => setIsModalVisible(false)}
         width={600}
-        className="payment-modal"
+        okButtonProps={{
+          style: {
+            background: '#1677ff',
+            borderColor: '#1677ff',
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            boxShadow: '0 2px 8px #e6f7ff'
+          }
+        }}
+        cancelButtonProps={{
+          style: {
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            borderColor: '#1677ff',
+            color: '#1677ff'
+          }
+        }}
+        styles={{
+          body: {
+            padding: '24px 32px',
+            background: '#f5faff',
+            borderRadius: 8
+          }
+        }}
         okText={editingPayment ? 'Update Payment' : 'Add Payment'}
         cancelText="Cancel"
       >
         <Form
           form={form}
           layout="vertical"
-          className="payment-form"
         >
           <Form.Item
             name="description"
             label={
-              <span>
+              <span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>
                 Description
                 <Tooltip title="A brief description of the payment">
                   <InfoCircleOutlined style={{ marginLeft: 8 }} />
@@ -267,13 +299,20 @@ const OutgoingPayments = () => {
               </span>
             }
             rules={[{ required: true, message: 'Please enter description' }]}>
-            <Input placeholder="e.g., Office supplies" />
+            <Input 
+              placeholder="e.g., Office supplies"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            />
           </Form.Item>
           
           <Form.Item
             name="amount"
             label={
-              <span>
+              <span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>
                 Amount
                 <Tooltip title="Enter the payment amount">
                   <InfoCircleOutlined style={{ marginLeft: 8 }} />
@@ -284,7 +323,12 @@ const OutgoingPayments = () => {
             <InputNumber
               min={0}
               step={0.01}
-              style={{ width: '100%' }}
+              style={{
+                width: '100%',
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
               formatter={value => `LKR ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               parser={value => value.replace(/LKR\s?|(,*)/g, '')}
               placeholder="e.g., 1500.00"
@@ -294,7 +338,7 @@ const OutgoingPayments = () => {
           <Form.Item
             name="outgoingPaymentCategoryDto"
             label={
-              <span>
+              <span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>
                 Category
                 <Tooltip title="Select the payment category">
                   <InfoCircleOutlined style={{ marginLeft: 8 }} />
@@ -302,7 +346,14 @@ const OutgoingPayments = () => {
               </span>
             }
             rules={[{ required: true, message: 'Please select a category' }]}>
-            <Select placeholder="Select a category">
+            <Select 
+              placeholder="Select a category"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            >
               {outgoingPaymentCategories.map(category => (
                 <Option key={category.id} value={category.id}>
                   {category.name}
@@ -313,41 +364,20 @@ const OutgoingPayments = () => {
 
           <Form.Item
             name="paymentMethodDto"
-            label={
-              <span>
-                Payment Method
-                <Tooltip title="Select the payment method">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </span>
-            }
+            label={<span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>Payment Method</span>}
             rules={[{ required: true, message: 'Please select a payment method' }]}>
-            <Select placeholder="Select a payment method">
+            <Select 
+              placeholder="Select Payment Method"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            >
               {paymentMethods.map(method => (
-                <Option key={method.id} value={method.id}>
-                  {method.name}
-                </Option>
+                <Option key={method.id} value={method.id}>{method.name}</Option>
               ))}
             </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="dateTime"
-            label={
-              <span>
-                Date & Time
-                <Tooltip title="Select the date and time of the payment">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </span>
-            }
-            rules={[{ required: true, message: 'Please select date and time' }]}>
-            <DatePicker
-              showTime
-              format="YYYY-MM-DD HH:mm"
-              style={{ width: '100%' }}
-              placeholder="Select date and time"
-            />
           </Form.Item>
         </Form>
       </Modal>

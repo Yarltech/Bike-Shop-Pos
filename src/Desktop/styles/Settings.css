@@ -1,7 +1,7 @@
 /* Minimal, clean settings form */
 
-/* Remove any card/box backgrounds and borders */
-.settings-container, .ant-card, .ant-card-body {
+/* Only remove card/box backgrounds and borders inside the settings page */
+.settings-container .ant-card, .settings-container .ant-card-body {
   background: none !important;
   box-shadow: none !important;
   border: none !important;
