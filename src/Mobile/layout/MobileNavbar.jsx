@@ -12,7 +12,7 @@ const navItems = [
   },
   {
     key: '/pos',
-    label: 'POS',
+    label: 'Outgoing',
     icon: faCashRegister,
   },
   {

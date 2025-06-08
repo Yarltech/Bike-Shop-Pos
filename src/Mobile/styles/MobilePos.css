@@ -1,5 +1,7 @@
 .mobile-pos {
-  padding: 0 16px;
+  padding: 16px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
 }
 
 .mobile-pos h2 {
@@ -24,6 +26,342 @@
   border-radius: 2px;
 }
 
+.mobile-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 0 0;
+  gap: 10px;
+}
+
+.mobile-pagination-btn {
+  background: #1677ff;
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 6px 18px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mobile-pagination-btn:disabled {
+  background: #e0e0e0;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.mobile-pagination-info {
+  font-size: 15px;
+  color: #222;
+  font-weight: 500;
+  padding: 0 8px;
+}
+
+.mobile-payments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 8px;
+}
+
+.mobile-payments-header h4 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 20px;
+}
+
+.mobile-add-button {
+  height: 40px;
+  border-radius: 20px;
+  font-weight: 500;
+  padding: 0 20px;
+  background: #1677ff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.mobile-payments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-payment-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.payment-info {
+  flex: 1;
+}
+
+.payment-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.payment-amount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1677ff;
+  margin: 0 0 8px 0;
+}
+
+.payment-category,
+.payment-method,
+.payment-date {
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mobile-action-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile Device Box Style for Modal */
+.mobile-payment-modal {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  max-height: 90vh;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+}
+
+.mobile-payment-modal .ant-modal-content {
+  background: #fff;
+  border-radius: 20px 20px 12px 12px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.18), 0 1.5px 6px rgba(44, 62, 80, 0.08);
+  padding: 0;
+  border: none;
+  min-width: 0;
+  max-width: 95vw;
+  margin: 0 auto;
+}
+
+.mobile-payment-modal .ant-modal-header {
+  background: transparent;
+  border-radius: 20px 20px 0 0;
+  border-bottom: none;
+  padding: 24px 20px 12px 20px;
+  text-align: center;
+}
+
+.mobile-payment-modal .ant-modal-title {
+  color: #1677ff;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.mobile-payment-modal .ant-modal-body {
+  padding: 0 20px 20px 20px;
+}
+
+.mobile-payment-form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+/* Style all input, input-number, and select fields inside the modal */
+.mobile-payment-modal .ant-modal-body .ant-input,
+.mobile-payment-modal .ant-modal-body .ant-input-number,
+.mobile-payment-modal .ant-modal-body .ant-select-selector {
+  width: 90%;
+  max-width: 340px;
+  margin-bottom: 16px;
+  display: block;
+  border-radius: 12px;
+  background: #f8fafd;
+  border: 1.5px solid #e6eaf1;
+  font-size: 16px;
+  min-height: 44px;
+  height: 44px;
+  line-height: 44px;
+  padding: 0 14px;
+  box-shadow: 0 1px 2px rgba(44, 62, 80, 0.03);
+  transition: border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
+  appearance: none;
+}
+
+/* Style the input inside InputNumber for vertical alignment */
+.mobile-payment-modal .ant-modal-body .ant-input-number-input {
+  height: 42px;
+  line-height: 42px;
+  border-radius: 12px;
+  background: transparent;
+  font-size: 16px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+/* Style the select arrow and selected value for better alignment */
+.mobile-payment-modal .ant-modal-body .ant-select-selector {
+  display: flex !important;
+  align-items: center;
+  padding: 0 14px !important;
+  min-height: 44px;
+  height: 44px !important;
+  background: #f8fafd !important;
+  border-radius: 12px !important;
+  border: 1.5px solid #e6eaf1 !important;
+  box-shadow: 0 1px 2px rgba(44, 62, 80, 0.03);
+}
+
+/* Add styles for the select dropdown icon */
+/* .mobile-payment-modal .ant-modal-body .ant-select-arrow {
+  color: #1677ff !important;
+  font-size: 14px !important;
+  right: 14px !important;
+}
+
+.mobile-payment-modal .ant-modal-body .ant-select-arrow .anticon {
+  font-size: 14px !important;
+}
+
+.mobile-payment-modal .ant-modal-body .ant-select-arrow .anticon-down {
+  font-family: "Font Awesome 5 Free" !important;
+  font-weight: 900 !important;
+}
+
+.mobile-payment-modal .ant-modal-body .ant-select-arrow .anticon-down::before {
+  content: "\f078" !important; 
+} */
+
+/* Focus state for all fields */
+.mobile-payment-modal .ant-modal-body .ant-input:focus,
+.mobile-payment-modal .ant-modal-body .ant-input-number-focused,
+.mobile-payment-modal .ant-modal-body .ant-select-focused .ant-select-selector {
+  border-color: #1677ff !important;
+  background: #f0f7ff !important;
+}
+
+/* Remove default background on select open */
+.mobile-payment-modal .ant-modal-body .ant-select-open .ant-select-selector {
+  background: #f0f7ff !important;
+}
+
+/* Remove border on select when disabled */
+.mobile-payment-modal .ant-modal-body .ant-select-disabled .ant-select-selector {
+  border-color: #e6eaf1 !important;
+  background: #f5f5f5 !important;
+}
+
+.mobile-payment-modal .ant-modal-footer {
+  background: transparent;
+  border-top: none;
+  padding: 16px 20px 20px 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.mobile-payment-modal .ant-modal-footer button {
+  border-radius: 22px;
+  font-size: 16px;
+  font-weight: 600;
+  height: 44px;
+  flex: 1;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.08);
+}
+
+.mobile-payment-modal .ant-modal-footer .ant-btn-primary {
+  background: linear-gradient(90deg, #1677ff 0%, #69b1ff 100%);
+  border: none;
+  color: #fff;
+}
+
+.mobile-payment-modal .ant-modal-footer .ant-btn-default {
+  border: 1.5px solid #1677ff;
+  color: #1677ff;
+  background: #fff;
+}
+
+/* Animation for payment cards */
+.mobile-payment-card {
+  transition: transform 0.2s ease;
+}
+
+.mobile-payment-card:active {
+  transform: scale(0.98);
+}
+
+/* Loading state */
+.mobile-payments-list.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Empty state */
+.mobile-payments-list:empty::after {
+  content: 'No payments found';
+  text-align: center;
+  color: #999;
+  padding: 32px;
+  font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 360px) {
+  .mobile-payments-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .mobile-add-button {
+    width: 100%;
+  }
+
+  .mobile-payment-card {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .payment-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .mobile-payment-form .ant-input,
+  .mobile-payment-form .ant-input-number,
+  .mobile-payment-form .ant-select-selector {
+    font-size: 14px;
+    height: 44px;
+  }
+
+  .mobile-payment-form .ant-input-number-input {
+    height: 42px;
+  }
+
+  .mobile-payment-form .ant-form-item-label > label {
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 400px) {
   .mobile-pos {
     padding: 0 8px;
@@ -31,5 +369,34 @@
   .mobile-pos h2 {
     margin: 16px 0;
     font-size: 1.5rem;
+  }
+  .mobile-payment-modal .ant-modal-content {
+    max-width: 99vw;
+  }
+  .mobile-payment-modal .ant-modal-header,
+  .mobile-payment-modal .ant-modal-body,
+  .mobile-payment-modal .ant-modal-footer {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .mobile-payment-modal .ant-modal-title {
+    font-size: 16px;
+  }
+  .mobile-payment-modal .ant-modal-body .ant-input,
+  .mobile-payment-modal .ant-modal-body .ant-input-number,
+  .mobile-payment-modal .ant-modal-body .ant-select-selector {
+    width: 98%;
+    font-size: 15px;
+    padding: 0 8px;
+  }
+}
+
+@media (max-width: 350px) {
+  .mobile-payment-form .ant-input,
+  .mobile-payment-form .ant-input-number,
+  .mobile-payment-form .ant-select-selector {
+    width: 98%;
+    font-size: 14px;
+    padding: 0 8px;
   }
 }

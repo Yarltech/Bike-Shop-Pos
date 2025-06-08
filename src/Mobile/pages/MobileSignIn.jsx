@@ -31,7 +31,7 @@ const MobileSignIn = () => {
           localStorage.setItem('userProfile', JSON.stringify(userProfile));
         }
         localStorage.setItem('isAuthenticated', 'true');
-        navigate('/home');
+        navigate('/dashboard');
       } else {
         let errorMessage = 'Invalid username or password';
         if (response.error === 'email_not_found') {

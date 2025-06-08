@@ -16,7 +16,7 @@ const MobileInventory = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize] = useState(7); // match backend default
+  const [pageSize] = useState(7);
   const [totalRecords, setTotalRecords] = useState(0);
   const navigate = useNavigate();
   const searchTimeout = React.useRef();

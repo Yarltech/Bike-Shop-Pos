@@ -1,37 +1,85 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/MobileDashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faHourglassHalf, faCheckCircle, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
-
-const cardData = [
-  {
-    label: 'Total Sales',
-    amount: '53250',
-    icon: faChartLine,
-    type: 'blue',
-  },
-  {
-    label: 'Pending',
-    amount: '12',
-    icon: faHourglassHalf,
-    type: 'dark',
-  },
-  {
-    label: 'Completed',
-    amount: '34',
-    icon: faCheckCircle,
-    type: 'blue',
-  },
-  {
-    label: 'Outgoing',
-    amount: '6700',
-    icon: faMoneyBillWave,
-    type: 'dark',
-  },
-];
+import CountUp from 'react-countup';
+import { getTodayTransactions, getTodayOutgoingPayments } from '../../API/Dashboard';
 
 const MobileDashboard = () => {
+  const [cardData, setCardData] = useState([
+    {
+      label: 'Total Work',
+      amount: 0,
+      icon: faChartLine,
+      type: 'blue',
+    },
+    {
+      label: 'Income Amount',
+      amount: 0,
+      icon: faHourglassHalf,
+      type: 'dark',
+    },
+    {
+      label: 'Outgoing Amount',
+      amount: 0,
+      icon: faCheckCircle,
+      type: 'blue',
+    },
+    {
+      label: 'Profit',
+      amount: 0,
+      icon: faMoneyBillWave,
+      type: 'dark',
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [todayTransactions, todayOutgoingPayments] = await Promise.all([
+          getTodayTransactions(),
+          getTodayOutgoingPayments()
+        ]);
+
+        const incomeAmount = todayTransactions?.totalAmount || 0;
+        const outgoingAmount = todayOutgoingPayments?.totalAmount || 0;
+        const profit = incomeAmount - outgoingAmount;
+
+        setCardData([
+          {
+            label: 'Total Work',
+            amount: todayTransactions?.totalCount || 0,
+            icon: faChartLine,
+            type: 'blue',
+          },
+          {
+            label: 'Income Amount',
+            amount: incomeAmount,
+            icon: faHourglassHalf,
+            type: 'dark',
+          },
+          {
+            label: 'Outgoing Amount',
+            amount: outgoingAmount,
+            icon: faCheckCircle,
+            type: 'blue',
+          },
+          {
+            label: 'Profit',
+            amount: profit,
+            icon: faMoneyBillWave,
+            type: profit >= 0 ? 'blue' : 'dark',
+          },
+        ]);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <motion.div
       className="mobile-dashboard"
@@ -54,7 +102,13 @@ const MobileDashboard = () => {
               <FontAwesomeIcon icon={card.icon} />
             </div>
             <div className="card-label">{card.label}</div>
-            <div className="card-amount">{card.amount}</div>
+            <div className="card-amount">
+              <CountUp 
+                end={card.amount} 
+                duration={1.2} 
+                separator=","
+              />
+            </div>
           </motion.div>
         ))}
       </div>
