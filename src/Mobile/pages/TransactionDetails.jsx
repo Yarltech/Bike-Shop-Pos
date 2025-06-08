@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getAllShopDetails } from '../../API/ShopDetailsApi';
 import '../styles/MobileTransactionDetails.css';
 
 const TransactionDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const txn = location.state?.transaction;
+  const [shopDetails, setShopDetails] = useState(null);
+
+  useEffect(() => {
+    const fetchShopDetails = async () => {
+      const response = await getAllShopDetails();
+      if (response.responseDto?.payload?.length > 0) {
+        setShopDetails(response.responseDto.payload[0]);
+      }
+    };
+    fetchShopDetails();
+  }, []);
 
   if (!txn) {
     return (
@@ -32,9 +44,9 @@ const TransactionDetails = () => {
         </div>
         <div className="receipt-info-grid">
           <div>
-            <div className="receipt-shop-name">Zed X Automotive Shop</div>
-            <div>123 Main Street</div>
-            <div>City, State ZIP</div>
+            <div className="receipt-shop-name">{shopDetails?.name || 'Zed X Automotive'}</div>
+            <div>{shopDetails?.shopAddress || 'Uduvil, Jaffna'}</div>
+            <div>{shopDetails?.mobileNumber || '0771234567'}</div>
           </div>
           <div>
             <div className="receipt-label">BILL TO</div>

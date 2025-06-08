@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Row, Col, message } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { updateUser } from '../../API/UserApi';
+import { getAllShopDetails, updateShopDetails } from '../../API/ShopDetailsApi';
 import '../styles/Settings.css';
 
-const initialValues = {
-  username: '',
-  name: '',
-  email: '',
-  mobile: '',
-};
-
 const Settings = () => {
-  const [form] = Form.useForm();
-  const [isEditing, setIsEditing] = useState(false);
+  const [userForm] = Form.useForm();
+  const [shopForm] = Form.useForm();
+  const [isUserEditing, setIsUserEditing] = useState(false);
+  const [isShopEditing, setIsShopEditing] = useState(false);
   const [user, setUser] = useState(null);
   const [originalUser, setOriginalUser] = useState(null);
+  const [shopDetails, setShopDetails] = useState(null);
+  const [originalShopDetails, setOriginalShopDetails] = useState(null);
 
   // Load user profile from localStorage on mount
   useEffect(() => {
@@ -25,7 +23,7 @@ const Settings = () => {
       if (userObj) {
         setUser(userObj);
         setOriginalUser(userObj);
-        form.setFieldsValue({
+        userForm.setFieldsValue({
           username: userObj.userName || '',
           name: userObj.name || '',
           email: userObj.emailAddress || '',
@@ -33,31 +31,33 @@ const Settings = () => {
         });
       }
     }
-  }, [form]);
+  }, [userForm]);
 
-  // Handle input changes
-  const handleInputChange = (field, value) => {
-    if (!isEditing) return;
-    setUser(prev => ({ ...prev, [field]: value }));
-    form.setFieldValue(field, value);
-  };
+  // Load shop details
+  useEffect(() => {
+    const fetchShopDetails = async () => {
+      try {
+        const response = await getAllShopDetails();
+        if (response?.status && response?.responseDto?.[0]) {
+          const shopData = response.responseDto[0];
+          setShopDetails(shopData);
+          setOriginalShopDetails(shopData);
+          shopForm.setFieldsValue({
+            shopName: shopData.name || '',
+            mobileNumber: shopData.mobileNumber || '',
+            shopAddress: shopData.shopAddress || '',
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching shop details:', error);
+        message.error('Failed to load shop details');
+      }
+    };
+    fetchShopDetails();
+  }, [shopForm]);
 
-  // Cancel editing and revert to original user data
-  const handleCancel = () => {
-    if (originalUser) {
-      setUser(originalUser);
-      form.setFieldsValue({
-        username: originalUser.userName || '',
-        name: originalUser.name || '',
-        email: originalUser.emailAddress || '',
-        mobile: originalUser.mobileNumber || '',
-      });
-    }
-    setIsEditing(false);
-  };
-
-  // Save handler
-  const handleSave = async () => {
+  // Handle user form save
+  const handleUserSave = async () => {
     if (!user) return;
     const updatedUser = {
       ...user,
@@ -68,102 +68,166 @@ const Settings = () => {
       password: originalUser.password,
     };
     const result = await updateUser(updatedUser);
-    console.log('updateUser result:', result);
     if (result && result.status) {
       message.success('Profile updated successfully!');
       setUser(updatedUser);
       setOriginalUser(updatedUser);
       localStorage.setItem('userProfile', JSON.stringify({ responseDto: [updatedUser] }));
-      setIsEditing(false);
+      setIsUserEditing(false);
     } else {
       message.error('Failed to update profile.');
     }
   };
 
+  // Handle shop form save
+  const handleShopSave = async () => {
+    if (!shopDetails) return;
+    const updatedShop = {
+      ...shopDetails,
+      name: shopDetails.shopName || shopDetails.name,
+      mobileNumber: shopDetails.mobileNumber,
+      shopAddress: shopDetails.shopAddress,
+    };
+    const result = await updateShopDetails(updatedShop);
+    if (result && result.status) {
+      message.success('Shop details updated successfully!');
+      setShopDetails(updatedShop);
+      setOriginalShopDetails(updatedShop);
+      setIsShopEditing(false);
+    } else {
+      message.error('Failed to update shop details.');
+    }
+  };
+
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      className="profile-form"
-      initialValues={initialValues}
-      onFinish={handleSave}
-    >
-      <div className="profile-logo-container">
-        <img src={require('../../img/Admin.jpg')} alt="Profile" className="profile-logo" />
-        <div className="profile-role">{user?.name || 'Name'}</div>
-        <div className="profile-role">{user?.userRoleDto?.userRole || 'Role'}</div>
-      </div>
-      <Row gutter={16}>
-        <Col xs={24} md={12}>
-          <Form.Item name="username" label="Username" rules={[{ required: true, message: 'Please enter username' }]}> 
+    <div className="settings-container">
+      {/* User Profile Card */}
+      <div className="settings-card">
+        <div className="card-header">
+          <img src={require('../../img/Admin.jpg')} alt="Profile" className="card-avatar" />
+          <div>
+            <h2 className="card-title">{user?.name || 'User Profile'}</h2>
+            <p className="card-subtitle">{user?.userRoleDto?.userRole || 'Role'}</p>
+          </div>
+        </div>
+        <Form form={userForm} layout="vertical" onFinish={handleUserSave}>
+          <div className="form-row">
+            <label className="form-label">Username</label>
             <Input
-              readOnly={!isEditing}
+              className="form-input"
+              readOnly={!isUserEditing}
               value={user?.userName || ''}
-              onChange={e => handleInputChange('userName', e.target.value)}
+              onChange={e => setUser(prev => ({ ...prev, userName: e.target.value }))}
             />
-          </Form.Item>
-        </Col>
-        <Col xs={24} md={12}>
-          <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please enter name' }]}> 
+          </div>
+          <div className="form-row">
+            <label className="form-label">Name</label>
             <Input
-              readOnly={!isEditing}
+              className="form-input"
+              readOnly={!isUserEditing}
               value={user?.name || ''}
-              onChange={e => handleInputChange('name', e.target.value)}
+              onChange={e => setUser(prev => ({ ...prev, name: e.target.value }))}
             />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col xs={24} md={12}>
-          <Form.Item name="email" label="Email Address" rules={[{ required: true, type: 'email', message: 'Please enter a valid email address' }]}> 
+          </div>
+          <div className="form-row">
+            <label className="form-label">Email Address</label>
             <Input
-              readOnly={!isEditing}
+              className="form-input"
+              readOnly={!isUserEditing}
               value={user?.emailAddress || ''}
-              onChange={e => handleInputChange('emailAddress', e.target.value)}
+              onChange={e => setUser(prev => ({ ...prev, emailAddress: e.target.value }))}
             />
-          </Form.Item>
-        </Col>
-        <Col xs={24} md={12}>
-          <Form.Item name="mobile" label="Mobile Number" rules={[{ required: true, message: 'Please enter mobile number' }]}> 
+          </div>
+          <div className="form-row">
+            <label className="form-label">Mobile Number</label>
             <Input
-              readOnly={!isEditing}
+              className="form-input"
+              readOnly={!isUserEditing}
               value={user?.mobileNumber || ''}
-              onChange={e => handleInputChange('mobileNumber', e.target.value)}
+              onChange={e => setUser(prev => ({ ...prev, mobileNumber: e.target.value }))}
             />
-          </Form.Item>
-        </Col>
-      </Row>
-      {!isEditing ? (
-        <div className="profile-actions-row">
-          <Button
-            type="primary"
-            className="save-btn"
-            size="large"
-            onClick={() => setIsEditing(true)}
-          >
-            Update
-          </Button>
+          </div>
+          <div className="card-actions">
+            {!isUserEditing ? (
+              <Button className="btn btn-primary" onClick={() => setIsUserEditing(true)}>
+                Update Profile
+              </Button>
+            ) : (
+              <>
+                <Button className="btn btn-default" onClick={() => {
+                  setUser(originalUser);
+                  setIsUserEditing(false);
+                }}>
+                  Cancel
+                </Button>
+                <Button className="btn btn-primary" onClick={handleUserSave}>
+                  Save Changes
+                </Button>
+              </>
+            )}
+          </div>
+        </Form>
+      </div>
+
+      {/* Shop Details Card */}
+      <div className="settings-card">
+        <div className="card-header">
+          <img src={shopDetails?.logo || require('../../img/Admin.jpg')} alt="Shop Logo" className="card-avatar" />
+          <div>
+            <h2 className="card-title">Shop Details</h2>
+            <p className="card-subtitle">{shopDetails?.name || 'Update shop information'}</p>
+          </div>
         </div>
-      ) : (
-        <div className="profile-actions-row">
-          <Button
-            onClick={handleCancel}
-            className="cancel-btn"
-            size="large"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="save-btn"
-            size="large"
-          >
-            Save
-          </Button>
-        </div>
-      )}
-    </Form>
+        <Form form={shopForm} layout="vertical" onFinish={handleShopSave}>
+          <div className="form-row">
+            <label className="form-label">Shop Name</label>
+            <Input
+              className="form-input"
+              readOnly={!isShopEditing}
+              value={shopDetails?.name || ''}
+              onChange={e => setShopDetails(prev => ({ ...prev, name: e.target.value }))}
+            />
+          </div>
+          <div className="form-row">
+            <label className="form-label">Mobile Number</label>
+            <Input
+              className="form-input"
+              readOnly={!isShopEditing}
+              value={shopDetails?.mobileNumber || ''}
+              onChange={e => setShopDetails(prev => ({ ...prev, mobileNumber: e.target.value }))}
+            />
+          </div>
+          <div className="form-row">
+            <label className="form-label">Shop Address</label>
+            <Input
+              className="form-input"
+              readOnly={!isShopEditing}
+              value={shopDetails?.shopAddress || ''}
+              onChange={e => setShopDetails(prev => ({ ...prev, shopAddress: e.target.value }))}
+            />
+          </div>
+          <div className="card-actions">
+            {!isShopEditing ? (
+              <Button className="btn btn-primary" onClick={() => setIsShopEditing(true)}>
+                Update Shop Details
+              </Button>
+            ) : (
+              <>
+                <Button className="btn btn-default" onClick={() => {
+                  setShopDetails(originalShopDetails);
+                  setIsShopEditing(false);
+                }}>
+                  Cancel
+                </Button>
+                <Button className="btn btn-primary" onClick={handleShopSave}>
+                  Save Changes
+                </Button>
+              </>
+            )}
+          </div>
+        </Form>
+      </div>
+    </div>
   );
 };
 
