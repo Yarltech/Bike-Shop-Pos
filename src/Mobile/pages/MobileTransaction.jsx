@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { getAllTransactionsPaginated } from '../../API/TransactionApi';
+import { getAllTransactionsPaginated, getTransactionsByTransactionNo } from '../../API/TransactionApi';
 import '../styles/MobileTransaction.css';
 
 const ArrowIcon = ({ onClick }) => (
@@ -16,18 +16,24 @@ const MobileTransaction = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize] = useState(7);
+  const [pageSize] = useState(6);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const fetchTransactions = useCallback(async (page = pageNumber) => {
     setLoading(true);
     try {
-      const response = await getAllTransactionsPaginated(page, pageSize);
-      if (response.errorDescription) {
-        setError(response.errorDescription);
+      let response;
+      if (searchQuery) {
+        response = await getTransactionsByTransactionNo(page, pageSize, searchQuery);
       } else {
-        // Support both array and object response
+        response = await getAllTransactionsPaginated(page, pageSize);
+      }
+
+      if (response && response.errorDescription) {
+        setError(response.errorDescription);
+      } else if (response) {
         const data = Array.isArray(response?.payload) ? response.payload : Array.isArray(response?.responseDto?.payload) ? response.responseDto.payload : [];
         setTransactions(data);
         setTotalRecords(response?.totalRecords || response?.responseDto?.totalRecords || 0);
@@ -37,11 +43,17 @@ const MobileTransaction = () => {
     } finally {
       setLoading(false);
     }
-  }, [pageNumber, pageSize]);
+  }, [pageNumber, pageSize, searchQuery]);
 
   useEffect(() => {
     fetchTransactions(pageNumber);
   }, [fetchTransactions, pageNumber]);
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setPageNumber(1); // Reset to first page when searching
+  };
 
   const handlePageChange = (newPage) => {
     if (newPage < 1 || newPage > Math.ceil(totalRecords / pageSize)) return;
@@ -54,13 +66,16 @@ const MobileTransaction = () => {
 
   return (
     <div className="mobile-transaction">
-      <input
-        className="mobile-search-input"
-        type="text"
-        placeholder="Search (not implemented)"
-        disabled
-        style={{ marginTop: 32, marginBottom: 18, opacity: 0.5 }}
-      />
+      <div className="mobile-search-container">
+        <input
+          className="mobile-search-input"
+          type="text"
+          placeholder="Search by Transaction No"
+          value={searchQuery}
+          onChange={handleSearch}
+          style={{ marginTop: 12, marginBottom: 18 }}
+        />
+      </div>
       {loading ? (
         <div className="mobile-inventory-loading">Loading...</div>
       ) : error ? (
@@ -94,7 +109,7 @@ const MobileTransaction = () => {
                   <div>
                     <div className="mobile-customer-name">{txn.customerDto?.name || 'N/A'}</div>
                     <div className="mobile-customer-vehicle" style={{ fontWeight: 700, color: '#2563eb', fontSize: '1.08rem' }}>
-                      ₹{txn.totalAmount ?? '0.00'}
+                      {txn.totalAmount ?? '0.00'}
                     </div>
                     <div className="mobile-customer-vehicle" style={{ color: '#8a94a6', fontSize: '0.97rem', marginTop: 2 }}>
                       {txn.paymentMethodDto?.name || ''}

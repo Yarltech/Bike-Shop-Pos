@@ -6,22 +6,22 @@ import { faHome, faCashRegister, faHistory, faUserCog, faUser } from '@fortaweso
 
 const navItems = [
   {
-    key: '/home',
+    key: '/dashboard',
     label: 'Home',
     icon: faHome,
   },
   {
     key: '/pos',
-    label: 'POS',
+    label: 'Outgoing',
     icon: faCashRegister,
   },
   {
-    key: '/customer',
+    key: '/customers',
     label: 'Customer',
     icon: faUser,
   },
   {
-    key: '/transaction',
+    key: '/transactions',
     label: 'Transactions',
     icon: faHistory,
   },

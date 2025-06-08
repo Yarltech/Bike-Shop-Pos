@@ -102,10 +102,10 @@ const SideBar = ({ isMobile, collapsed, pageTitle, isModalOpen }) => {
       onClick: () => navigate('/outgoing-payment-categories'),
     },
     {
-      key: '/settings',
+      key: '/profile',
       icon: <SettingOutlined />,
       label: 'Settings',
-      onClick: () => navigate('/settings'),
+      onClick: () => navigate('/profile'),
     },
     {
       type: 'divider',

@@ -76,10 +76,10 @@ function App() {
                 <Route path="/forgot-password" element={<MobileForgotPassword />} />
                 <Route path="/reset-password" element={<MobileResetPassword />} />
                 <Route element={<MobileIndex />}>
-                  <Route path="/home" element={<MobileDashboard />} />
+                  <Route path="/dashboard" element={<MobileDashboard />} />
                   <Route path="/pos" element={<MobilePos />} />
-                  <Route path="/customer" element={<MobileInventory />} />
-                  <Route path="/transaction" element={<MobileTransaction />} />
+                  <Route path="/customers" element={<MobileInventory />} />
+                  <Route path="/transactions" element={<MobileTransaction />} />
                   <Route path="/transaction/:id" element={<TransactionDetails />} />
                   <Route path="/profile" element={<MobileSetting />} />
                 </Route>
@@ -103,7 +103,7 @@ function App() {
                 <Route path="/transactions" element={<ProtectedRoute><MainLayout><Transactions /></MainLayout></ProtectedRoute>} />
                 <Route path="/outgoing-payments" element={<ProtectedRoute><MainLayout><OutgoingPayments /></MainLayout></ProtectedRoute>} />
                 <Route path="/outgoing-payment-categories" element={<ProtectedRoute><MainLayout><OutgoingPaymentCategories /></MainLayout></ProtectedRoute>} />
-                <Route path="/settings" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><MainLayout><Settings /></MainLayout></ProtectedRoute>} />
                 <Route path="/" element={<Navigate to="/signin" replace />} />
                 <Route path="*" element={<Navigate to="/pagenotfound" replace />} />
               </>
