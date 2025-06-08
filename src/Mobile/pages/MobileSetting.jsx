@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { updateUser } from '../../API/UserApi';
 import { message } from 'antd';
-import { UserOutlined, MailOutlined, PhoneOutlined, EditOutlined } from '@ant-design/icons';
+import { UserOutlined, MailOutlined, PhoneOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons';
 import '../styles/MobileSetting.css';
 
 const MobileSetting = () => {
@@ -11,6 +11,7 @@ const MobileSetting = () => {
   const [originalUser, setOriginalUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsEditing(false);
@@ -50,6 +51,14 @@ const MobileSetting = () => {
     } else {
       message.error('Failed to update profile.');
     }
+  };
+
+  const handleLogout = () => {
+    // Clear all stored data
+    localStorage.clear();
+    // Redirect to login page
+    navigate('/signin');
+    message.success('Logged out successfully');
   };
 
   return (
@@ -174,6 +183,22 @@ const MobileSetting = () => {
             )}
           </div>
         </motion.form>
+
+        <motion.div 
+          className="logout-section"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          <motion.button
+            type="button"
+            className="logout-btn"
+            whileTap={{ scale: 0.97 }}
+            onClick={handleLogout}
+          >
+            <LogoutOutlined /> Logout
+          </motion.button>
+        </motion.div>
       </div>
     </motion.div>
   );
