@@ -359,6 +359,19 @@ const POS = ({ setIsModalOpen }) => {
     const res = await updateTransaction(updatedTransaction);
     if (res && res.status !== false) {
       message.success('Final payment completed and transaction updated!');
+      
+      // Send receipt via WhatsApp
+      openWhatsAppWithReceipt(
+        selectedPendingPayment.customerDto.mobileNumber,
+        selectedPendingPayment.transactionNo,
+        newTotalAmount,
+        selectedPendingPayment.customerDto.name,
+        selectedPendingPayment.customerDto.vehicleNumber,
+        cart,
+        'final',
+        advancePaymentMade
+      );
+      
       setSelectedPendingPayment(null);
       setCart([]);
       setLoadingPending(true);
@@ -391,6 +404,66 @@ const POS = ({ setIsModalOpen }) => {
     setPaymentModalOpen(true);
     setCurrentModalStep(0);
     paymentForm.resetFields();
+  };
+
+  const formatReceiptMessage = (transactionNo, customerName, vehicleNumber, services, totalAmount, paymentType, advanceAmount = 0) => {
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    
+    let message = `Zedx Automotive\n\n`;
+    message += `Receipt No: ${transactionNo}\n`;
+    message += `Date: ${date}\n`;
+    message += `Customer: ${customerName}\n`;
+    message += `Vehicle: ${vehicleNumber}\n\n`;
+    
+    message += `Services:\n`;
+    services.forEach((item, index) => {
+      message += `${index + 1}. ${item.name}\n`;
+      if (item.description) {
+        message += `     ${item.description}\n`;
+      }
+      message += `     LKR ${item.price}\n\n`;
+    });
+    
+    message += `Payment Details:\n`;
+    message += `  Payment Type: ${paymentType.toUpperCase()}\n`;
+    if (paymentType === 'advance') {
+      message += `  Advance Amount: LKR ${advanceAmount}\n`;
+      message += `  Remaining Amount: LKR ${totalAmount - advanceAmount}\n`;
+    }
+    message += `  Total Amount: LKR ${totalAmount}\n\n`;
+    
+    message += `Thank you for your business!  \n`;
+    message += `We appreciate your trust in our services.`;
+    
+    return message;
+  };
+
+  const openWhatsAppWithReceipt = (customerMobile, transactionNo, totalAmount, customerName, vehicleNumber, services, paymentType, advanceAmount = 0) => {
+    // Format the mobile number
+    const formattedMobile = customerMobile.replace(/[^0-9]/g, '');
+    const whatsappNumber = formattedMobile.startsWith('0') 
+      ? `94${formattedMobile.substring(1)}` 
+      : `94${formattedMobile}`;
+    
+    // Create the formatted receipt message
+    const message = formatReceiptMessage(
+      transactionNo,
+      customerName,
+      vehicleNumber,
+      services,
+      totalAmount,
+      paymentType,
+      advanceAmount
+    );
+    
+    // Encode the message for URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Create WhatsApp Web URL
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleInitialFinalPaymentClick = () => {
@@ -843,6 +916,30 @@ const POS = ({ setIsModalOpen }) => {
                 const res = await saveTransaction(transactionData);
                 if (res && res.status !== false) {
                   message.success(`Transaction ${transactionNo} saved successfully!`);
+                  
+                  // Get customer details
+                  const customerMobile = selectedCustomerRadioType === 'existing' 
+                    ? selectedCustomerInTable.mobileNumber 
+                    : values.newCustomerMobile;
+                  const customerName = selectedCustomerRadioType === 'existing'
+                    ? selectedCustomerInTable.name
+                    : values.newCustomerName;
+                  const vehicleNumber = selectedCustomerRadioType === 'existing'
+                    ? selectedCustomerInTable.vehicleNumber
+                    : values.newCustomerVehicle;
+                    
+                  // Open WhatsApp with receipt
+                  openWhatsAppWithReceipt(
+                    customerMobile,
+                    transactionNo,
+                    total,
+                    customerName,
+                    vehicleNumber,
+                    cart,
+                    paymentType,
+                    advanceAmount
+                  );
+                  
                   setCart([]);
                   setPaymentModalOpen(false);
                   setSelectedPendingPayment(null);
