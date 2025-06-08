@@ -41,7 +41,7 @@ const keyframes = `
 }
 `;
 
-const SideBar = ({ isMobile, collapsed, pageTitle }) => {
+const SideBar = ({ isMobile, collapsed, pageTitle, isModalOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [currentDateTime, setCurrentDateTime] = React.useState(dayjs());
@@ -72,6 +72,12 @@ const SideBar = ({ isMobile, collapsed, pageTitle }) => {
       onClick: () => navigate('/pos'),
     },
     {
+      key: '/outgoing-payments',
+      icon: <DollarOutlined />,
+      label: 'Outgoing Payment',
+      onClick: () => navigate('/outgoing-payments'),
+    },
+    {
       key: '/services',
       icon: <ToolOutlined />,
       label: 'Services',
@@ -88,12 +94,6 @@ const SideBar = ({ isMobile, collapsed, pageTitle }) => {
       icon: <HistoryOutlined />,
       label: 'Transactions',
       onClick: () => navigate('/transactions'),
-    },
-    {
-      key: '/outgoing-payments',
-      icon: <DollarOutlined />,
-      label: 'Payments',
-      onClick: () => navigate('/outgoing-payments'),
     },
     {
       key: '/outgoing-payment-categories',
@@ -166,11 +166,12 @@ const SideBar = ({ isMobile, collapsed, pageTitle }) => {
             key: item.key,
             icon: item.icon,
             label: item.label,
-            onClick: item.onClick,
+            onClick: isModalOpen ? undefined : item.onClick,
             danger: item.danger,
           }))}
           className="sidebar-menu"
         />
+        {isModalOpen && <div className="sidebar-overlay"></div>}
       </Sider>
     </>
   );

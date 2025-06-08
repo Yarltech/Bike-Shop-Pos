@@ -185,8 +185,14 @@ const Services = () => {
 
       <Modal
         title={
-          <div className="modal-title">
-            <span className="modal-title-icon">{editingService ? '✏️' : '➕'}</span>
+          <div style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: '#1677ff',
+            borderBottom: '2px solid #e6f7ff',
+            paddingBottom: 12,
+            marginBottom: 8
+          }}>
             {editingService ? 'Edit Service' : 'Add New Service'}
           </div>
         }
@@ -194,29 +200,66 @@ const Services = () => {
         onOk={handleModalOk}
         onCancel={() => setIsModalVisible(false)}
         width={500}
-        className="service-modal"
+        okButtonProps={{
+          style: {
+            background: '#1677ff',
+            borderColor: '#1677ff',
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            boxShadow: '0 2px 8px #e6f7ff'
+          }
+        }}
+        cancelButtonProps={{
+          style: {
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            borderColor: '#1677ff',
+            color: '#1677ff'
+          }
+        }}
+        styles={{
+          body: {
+            padding: '24px 32px',
+            background: '#f5faff',
+            borderRadius: 8
+          }
+        }}
         okText={editingService ? 'Update Service' : 'Add Service'}
         cancelText="Cancel"
       >
         <Form
           form={form}
           layout="vertical"
-          className="service-form"
         >
           <Form.Item
-            name="name"
-            label="Service Name"
-            rules={[{ required: true, message: 'Please enter service name' }]}
-          >
-            <Input placeholder="e.g., Bike Repair" />
-          </Form.Item>
-          
-          <Form.Item
             name="icon"
-            label="Icon"
-            rules={[{ required: true, message: 'Please enter an icon' }]}
-          >
-            <Input placeholder="Enter an emoji (e.g., 🔧)" />
+            label={<span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>Icon</span>}
+            rules={[{ required: true, message: 'Please enter an icon (e.g., ⚙️)' }]}>
+            <Input 
+              placeholder="e.g., ⚙️"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="name"
+            label={<span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>Service Name</span>}
+            rules={[{ required: true, message: 'Please enter service name' }]}>
+            <Input 
+              placeholder="e.g., General Service"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            />
           </Form.Item>
         </Form>
       </Modal>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import SideBar from './SideBar';
 import '../styles/MainLayout.css';
@@ -16,12 +16,13 @@ const routeTitleMap = {
 const MainLayout = ({ children }) => {
   const location = useLocation();
   const pageTitle = routeTitleMap[location.pathname] || '';
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="main-layout-flex">
-      <SideBar pageTitle={pageTitle} />
+      <SideBar pageTitle={pageTitle} isModalOpen={isModalOpen} />
       <div className="main-content-area">
-        {children}
+        {React.cloneElement(children, { setIsModalOpen })}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Space, message, Card, Typography, Tooltip, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import '../styles/Customers.css'; // Reuse the same styles
 import useHeadingObserver from '../layouts/useHeadingObserver';
 import { saveCustomer, updateCustomer, getAllCustomersPaginated, updateCustomerStatus } from '../../API/CustomerApi';
@@ -280,8 +280,14 @@ const Customer = () => {
 
       <Modal
         title={
-          <div className="modal-title">
-            <span className="modal-title-icon">{editingCustomer ? '✏️' : '➕'}</span>
+          <div style={{
+            fontSize: 20,
+            fontWeight: 600,
+            color: '#1677ff',
+            borderBottom: '2px solid #e6f7ff',
+            paddingBottom: 12,
+            marginBottom: 8
+          }}>
             {editingCustomer ? 'Edit Customer' : 'Add New Customer'}
           </div>
         }
@@ -289,55 +295,79 @@ const Customer = () => {
         onOk={handleModalOk}
         onCancel={() => setIsModalVisible(false)}
         width={600}
-        className="customer-modal"
+        okButtonProps={{
+          style: {
+            background: '#1677ff',
+            borderColor: '#1677ff',
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            boxShadow: '0 2px 8px #e6f7ff'
+          }
+        }}
+        cancelButtonProps={{
+          style: {
+            height: 40,
+            fontSize: 16,
+            fontWeight: 500,
+            borderRadius: 6,
+            borderColor: '#1677ff',
+            color: '#1677ff'
+          }
+        }}
+        styles={{
+          body: {
+            padding: '24px 32px',
+            background: '#f5faff',
+            borderRadius: 8
+          }
+        }}
         okText={editingCustomer ? 'Update Customer' : 'Add Customer'}
         cancelText="Cancel"
       >
         <Form
           form={form}
           layout="vertical"
-          className="customer-form"
         >
-          <Form.Item 
-            name="name" 
-            label={
-              <span>
-                Name
-                <Tooltip title="Enter the customer's full name">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </span>
-            }
+          <Form.Item
+            name="name"
+            label={<span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>Customer Name</span>}
             rules={[{ required: true, message: 'Please enter customer name' }]}>
-            <Input placeholder="e.g., John Doe" />
+            <Input 
+              placeholder="Enter customer name"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            />
           </Form.Item>
-          
-          <Form.Item 
-            name="vehicleNumber" 
-            label={
-              <span>
-                Vehicle Number
-                <Tooltip title="Enter the customer's vehicle number">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </span>
-            }
+          <Form.Item
+            name="vehicleNumber"
+            label={<span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>Vehicle Number</span>}
             rules={[{ required: true, message: 'Please enter vehicle number' }]}>
-            <Input placeholder="e.g., BAO-4541" />
+            <Input 
+              placeholder="Enter vehicle number"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            />
           </Form.Item>
-
-          <Form.Item 
-            name="mobileNumber" 
-            label={
-              <span>
-                Mobile Number
-                <Tooltip title="Enter the customer's mobile number">
-                  <InfoCircleOutlined style={{ marginLeft: 8 }} />
-                </Tooltip>
-              </span>
-            }
-            rules={[{ required: true, message: 'Please enter mobile number' }]}>
-            <Input placeholder="e.g., 0771234567" />
+          <Form.Item
+            name="mobileNumber"
+            label={<span style={{ fontSize: 16, fontWeight: 500, color: '#1677ff' }}>Mobile Number</span>}
+            rules={[{ required: true, message: 'Please enter mobile number' }, { pattern: /^\d{10}$/, message: 'Enter a valid 10-digit mobile number' }]}>
+            <Input 
+              placeholder="Enter mobile number"
+              style={{
+                borderRadius: 6,
+                borderColor: '#1677ff',
+                boxShadow: '0 2px 8px #e6f7ff'
+              }}
+            />
           </Form.Item>
         </Form>
       </Modal>
