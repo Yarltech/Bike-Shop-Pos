@@ -8,7 +8,10 @@ import { getTransactionsByStatus, updateTransaction } from '../../API/Transactio
 import { getAllPaymentMethods } from '../../API/PaymentMethodApi';
 import { getAllCustomersPaginated, saveCustomer } from '../../API/CustomerApi';
 import { saveTransaction, getAllTransactionsPaginated } from '../../API/TransactionApi';
+import { getAllShopDetails } from '../../API/ShopDetailsApi';
 import dayjs from 'dayjs';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const { Title } = Typography;
 
@@ -35,6 +38,7 @@ const POS = ({ setIsModalOpen }) => {
   const [lastTransactionNumber, setLastTransactionNumber] = useState(null);
   const [paymentForm] = Form.useForm();
   const [customerForm] = Form.useForm();
+  const [shopDetails, setShopDetails] = useState(null); // New state for shop details
 
   const [selectedCustomerInTable, setSelectedCustomerInTable] = useState(null);
   const [searchCustomer, setSearchCustomer] = useState('');
@@ -52,6 +56,19 @@ const POS = ({ setIsModalOpen }) => {
       setCustomerFormKey(prevKey => prevKey + 1); // Increment key to force form re-render
     }
   }, [paymentModalOpen, customerForm]);
+
+  const fetchShopDetails = async () => {
+    try {
+      const response = await getAllShopDetails();
+      if (response && response.responseDto && response.responseDto.length > 0) {
+        setShopDetails(response.responseDto[0]);
+      } else {
+        message.error(response.errorDescription || 'Failed to fetch shop details.');
+      }
+    } catch (error) {
+      message.error('Error fetching shop details');
+    }
+  };
 
   const fetchServices = async () => {
     setLoadingServices(true);
@@ -113,6 +130,7 @@ const POS = ({ setIsModalOpen }) => {
     fetchPaymentMethods();
     fetchCustomers();
     fetchLastTransactionNumber();
+    fetchShopDetails(); // Fetch shop details on mount
   }, []);
 
   useEffect(() => {
@@ -359,6 +377,20 @@ const POS = ({ setIsModalOpen }) => {
     const res = await updateTransaction(updatedTransaction);
     if (res && res.status !== false) {
       message.success('Final payment completed and transaction updated!');
+      
+      // Send receipt via WhatsApp
+      openWhatsAppWithReceipt(
+        selectedPendingPayment.customerDto.mobileNumber,
+        selectedPendingPayment.transactionNo,
+        newTotalAmount,
+        selectedPendingPayment.customerDto.name,
+        selectedPendingPayment.customerDto.vehicleNumber,
+        cart,
+        'final',
+        advancePaymentMade,
+        shopDetails
+      );
+      
       setSelectedPendingPayment(null);
       setCart([]);
       setLoadingPending(true);
@@ -391,6 +423,188 @@ const POS = ({ setIsModalOpen }) => {
     setPaymentModalOpen(true);
     setCurrentModalStep(0);
     paymentForm.resetFields();
+  };
+
+  const formatReceiptMessage = (transactionNo, customerName, vehicleNumber, services, totalAmount, paymentType, advanceAmount = 0) => {
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    
+    let message = `Zedx Automotive\n\n`;
+    message += `Receipt No: ${transactionNo}\n`;
+    message += `Date: ${date}\n`;
+    message += `Customer: ${customerName}\n`;
+    message += `Vehicle: ${vehicleNumber}\n\n`;
+    
+    message += `Services:\n`;
+    services.forEach((item, index) => {
+      message += `${index + 1}. ${item.name}\n`;
+      if (item.description) {
+        message += `     ${item.description}\n`;
+      }
+      message += `     LKR ${item.price}\n\n`;
+    });
+    
+    message += `Payment Details:\n`;
+    message += `  Payment Type: ${paymentType.toUpperCase()}\n`;
+    if (paymentType === 'advance') {
+      message += `  Advance Amount: LKR ${advanceAmount}\n`;
+      message += `  Remaining Amount: LKR ${totalAmount - advanceAmount}\n`;
+    }
+    message += `  Total Amount: LKR ${totalAmount}\n\n`;
+    
+    message += `Thank you for your business!  \n`;
+    message += `We appreciate your trust in our services.`;
+    
+    return message;
+  };
+
+  const generateReceiptPDF = (transactionNo, customerName, vehicleNumber, services, totalAmount, paymentType, advanceAmount = 0, shopInfo, customerMobile) => {
+    const doc = new jsPDF();
+    
+    // Page border
+    doc.rect(5, 5, doc.internal.pageSize.width - 10, doc.internal.pageSize.height - 10);
+
+    // Company Name, Address, and Bill Receipt Title
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text(shopInfo?.name || 'COMPANY NAME', doc.internal.pageSize.width / 2, 20, { align: 'center' });
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text(shopInfo?.shopAddress || 'Address Line 1: Address Line 2:', doc.internal.pageSize.width / 2, 27, { align: 'center' });
+
+    doc.setFontSize(20);
+    doc.setFont(undefined, 'bold');
+    doc.text('BILL RECEIPT', doc.internal.pageSize.width / 2, 45, { align: 'center' });
+    doc.setLineWidth(0.5);
+    doc.line(20, 50, doc.internal.pageSize.width - 20, 50);
+
+    // Customer Details
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    doc.text('Customer Name:', 20, 60);
+    doc.text(customerName || '', 70, 60);
+
+    doc.text('Vehicle Number:', 20, 68);
+    doc.text(vehicleNumber || '', 70, 68);
+
+    doc.text('Mobile Number:', 20, 76);
+    doc.text(customerMobile || '', 70, 76);
+
+    doc.setLineWidth(0.5);
+    doc.line(20, 80, doc.internal.pageSize.width - 20, 80); // Line below customer details
+
+    // Bill Details (Moved and simplified)
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+
+    doc.text(`Date: ${dayjs().format('YYYY-MM-DD')}`, 20, 90);
+    doc.text(`Bill No: ${transactionNo}`, doc.internal.pageSize.width / 2 + 30, 90);
+    
+    // Services table
+    const tableColumn = ['Bill No', 'Services', 'Pay Bill', 'Total']; // Renamed Particulars to Services
+    const tableRows = services.map(item => [
+      transactionNo, // Using transactionNo as Bill No for each service line
+      item.name + (item.description ? `\n(${item.description})` : ''),
+      `LKR ${item.price.toFixed(2)}`, // Pay Bill
+      `LKR ${item.price.toFixed(2)}`
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 100, // Adjusted startY for the table
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2 },
+      headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+      columnStyles: {
+        0: { cellWidth: 25, halign: 'center' }, // Bill No (adjusted width)
+        1: { cellWidth: 100 }, // Services (increased width to compensate for Quantity)
+        2: { cellWidth: 30, halign: 'right' }, // Pay Bill (adjusted width)
+        3: { cellWidth: 30, halign: 'right' }, // Total (adjusted width)
+      },
+    });
+    
+    // Payment Details and Total Amount (Moved below table)
+    let currentY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    doc.text('Payment Details:', 20, currentY);
+    currentY += 7;
+    doc.setFont(undefined, 'normal');
+    doc.text(`Payment Type: ${paymentType.toUpperCase()}`, 20, currentY);
+    currentY += 7;
+
+    if (paymentType === 'advance') {
+      doc.text(`Advance Amount: LKR ${advanceAmount.toFixed(2)}`, 20, currentY);
+      currentY += 7;
+      doc.text(`Remaining Amount: LKR ${(totalAmount - advanceAmount).toFixed(2)}`, 20, currentY);
+      currentY += 7;
+    }
+    
+    // Total Amount at the bottom right, adjusted dynamically
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Total: LKR ${totalAmount.toFixed(2)}`, doc.internal.pageSize.width - 20, currentY + 10, { align: 'right' });
+
+    // Additional Notes removed
+    // Signatures removed
+
+    return doc;
+  };
+
+  const openWhatsAppWithReceipt = (customerMobile, transactionNo, totalAmount, customerName, vehicleNumber, services, paymentType, advanceAmount = 0, shopDetails) => {
+    // Generate PDF
+    const pdfDoc = generateReceiptPDF(
+      transactionNo,
+      customerName,
+      vehicleNumber,
+      services,
+      totalAmount,
+      paymentType,
+      advanceAmount,
+      shopDetails,
+      customerMobile
+    );
+    
+    // Save PDF temporarily
+    const pdfBlob = pdfDoc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    
+    // Format the mobile number
+    const formattedMobile = customerMobile.replace(/[^0-9]/g, '');
+    const whatsappNumber = formattedMobile.startsWith('0') 
+      ? `94${formattedMobile.substring(1)}` 
+      : `94${formattedMobile}`;
+    
+    // Create the formatted receipt message
+    const message = formatReceiptMessage(
+      transactionNo,
+      customerName,
+      vehicleNumber,
+      services,
+      totalAmount,
+      paymentType,
+      advanceAmount
+    );
+    
+    // Encode the message for URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // Create WhatsApp Web URL
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, '_blank');
+    
+    // Create a temporary link to download the PDF
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = `receipt_${transactionNo}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clean up the URL object
+    URL.revokeObjectURL(pdfUrl);
   };
 
   const handleInitialFinalPaymentClick = () => {
@@ -843,6 +1057,31 @@ const POS = ({ setIsModalOpen }) => {
                 const res = await saveTransaction(transactionData);
                 if (res && res.status !== false) {
                   message.success(`Transaction ${transactionNo} saved successfully!`);
+                  
+                  // Get customer details
+                  const customerMobile = selectedCustomerRadioType === 'existing' 
+                    ? selectedCustomerInTable.mobileNumber 
+                    : values.newCustomerMobile;
+                  const customerName = selectedCustomerRadioType === 'existing'
+                    ? selectedCustomerInTable.name
+                    : values.newCustomerName;
+                  const vehicleNumber = selectedCustomerRadioType === 'existing'
+                    ? selectedCustomerInTable.vehicleNumber
+                    : values.newCustomerVehicle;
+                    
+                  // Open WhatsApp with receipt
+                  openWhatsAppWithReceipt(
+                    customerMobile,
+                    transactionNo,
+                    total,
+                    customerName,
+                    vehicleNumber,
+                    cart,
+                    paymentType,
+                    advanceAmount,
+                    shopDetails
+                  );
+                  
                   setCart([]);
                   setPaymentModalOpen(false);
                   setSelectedPendingPayment(null);
