@@ -96,3 +96,26 @@ export const getOutgoingPaymentTotals = async () => {
     return null;
   }
 };
+
+// Get Last 30 Days Transaction Data for Chart
+export const getLast30DaysTransactionData = async () => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await axios.get(
+      `${BASE_BACKEND_URL}/transaction/getLast30DaysData`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (response.data.status) {
+      return response.data.responseDto;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching last 30 days transaction data:", error);
+    return null;
+  }
+};

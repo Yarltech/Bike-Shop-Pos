@@ -1,84 +1,224 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/MobileDashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faHourglassHalf, faCheckCircle, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
+import { faClipboardList, faArrowUp, faArrowDown, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
-import { getTodayTransactions, getTodayOutgoingPayments } from '../../API/Dashboard';
+import { 
+  getTodayTransactions,
+  getTodayOutgoingPayments,
+  getLast30DaysTransactionData,
+  getTransactionTotals,
+  getOutgoingPaymentTotals
+} from '../../API/Dashboard';
+import { Line } from '@ant-design/plots';
+import { message } from 'antd';
 
 const MobileDashboard = () => {
   const [cardData, setCardData] = useState([
     {
       label: 'Total Work',
       amount: 0,
-      icon: faChartLine,
+      icon: faClipboardList,
       type: 'blue',
     },
     {
       label: 'Income Amount',
       amount: 0,
-      icon: faHourglassHalf,
+      icon: faArrowUp,
       type: 'dark',
     },
     {
       label: 'Outgoing Amount',
       amount: 0,
-      icon: faCheckCircle,
+      icon: faArrowDown,
       type: 'blue',
     },
     {
       label: 'Profit',
       amount: 0,
-      icon: faMoneyBillWave,
+      icon: faDollarSign,
       type: 'dark',
     },
   ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [todayTransactions, todayOutgoingPayments] = await Promise.all([
-          getTodayTransactions(),
-          getTodayOutgoingPayments()
-        ]);
+  const [last30DaysFinancials, setLast30DaysFinancials] = useState({
+    totalSales: 0,
+    incomeAmount: 0,
+    outgoingAmount: 0,
+    profit: 0,
+  });
 
-        const incomeAmount = todayTransactions?.totalAmount || 0;
-        const outgoingAmount = todayOutgoingPayments?.totalAmount || 0;
-        const profit = incomeAmount - outgoingAmount;
+  const [loadingFinancials, setLoadingFinancials] = useState(false);
+  const [chartData, setChartData] = useState([]);
+  const [loadingChart, setLoadingChart] = useState(false);
 
-        setCardData([
-          {
-            label: 'Total Work',
-            amount: todayTransactions?.totalCount || 0,
-            icon: faChartLine,
-            type: 'blue',
-          },
-          {
-            label: 'Income Amount',
-            amount: incomeAmount,
-            icon: faHourglassHalf,
-            type: 'dark',
-          },
-          {
-            label: 'Outgoing Amount',
-            amount: outgoingAmount,
-            icon: faCheckCircle,
-            type: 'blue',
-          },
-          {
-            label: 'Profit',
-            amount: profit,
-            icon: faMoneyBillWave,
-            type: profit >= 0 ? 'blue' : 'dark',
-          },
-        ]);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+  const fetchChartData = async () => {
+    setLoadingChart(true);
+    try {
+      const response = await getLast30DaysTransactionData();
+      console.log('Mobile Chart data received:', response);
+      
+      if (response && Array.isArray(response)) {
+        const formattedData = response.filter(item => item.profit !== null && typeof item.profit !== 'undefined').map(item => ({
+          date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          sales: parseFloat(item.profit) || 0
+        }));
+        console.log('Formatted mobile chart data:', formattedData);
+        setChartData(formattedData);
+      } else {
+        console.log('No valid daily sales data received for mobile chart');
+        setChartData([]);
       }
-    };
+    } catch (error) {
+      message.error("Failed to fetch mobile chart data.");
+      console.error("Error fetching mobile chart data:", error);
+      setChartData([]);
+    } finally {
+      setLoadingChart(false);
+    }
+  };
 
-    fetchData();
+  const fetchTodayFinancials = async () => {
+    setLoadingFinancials(true);
+    try {
+      const [todayTransactions, todayOutgoingPayments] = await Promise.all([
+        getTodayTransactions(),
+        getTodayOutgoingPayments()
+      ]);
+
+      const incomeAmount = todayTransactions?.totalAmount || 0;
+      const outgoingAmount = todayOutgoingPayments?.totalAmount || 0;
+      const profit = incomeAmount - outgoingAmount;
+
+      setCardData([
+        {
+          label: 'Total Work',
+          amount: todayTransactions?.totalCount || 0,
+          icon: faClipboardList,
+          type: 'blue',
+        },
+        {
+          label: 'Income Amount',
+          amount: incomeAmount,
+          icon: faArrowUp,
+          type: 'dark',
+        },
+        {
+          label: 'Outgoing Amount',
+          amount: outgoingAmount,
+          icon: faArrowDown,
+          type: 'blue',
+        },
+        {
+          label: 'Profit',
+          amount: profit,
+          icon: faDollarSign,
+          type: profit >= 0 ? 'blue' : 'dark',
+        },
+      ]);
+    } catch (error) {
+      console.error('Error fetching today\'s dashboard data:', error);
+      message.error(`Failed to fetch today's financial data.`);
+    } finally {
+      setLoadingFinancials(false);
+    }
+  };
+
+  const fetchLast30DaysFinancials = async () => {
+    setLoadingFinancials(true);
+    try {
+      const [transactionTotals, outgoingPaymentTotals] = await Promise.all([
+        getTransactionTotals(),
+        getOutgoingPaymentTotals()
+      ]);
+
+      setLast30DaysFinancials({
+        totalSales: transactionTotals?.totalCount || 0,
+        incomeAmount: transactionTotals?.totalAmount || 0,
+        outgoingAmount: outgoingPaymentTotals?.totalAmount || 0,
+        profit: (transactionTotals?.totalAmount || 0) - (outgoingPaymentTotals?.totalAmount || 0),
+      });
+    } catch (error) {
+      message.error("Failed to fetch last 30 days' financial data.");
+      console.error("Error fetching last 30 days' financials:", error);
+    } finally {
+      setLoadingFinancials(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodayFinancials();
+    fetchLast30DaysFinancials();
+    fetchChartData(); 
   }, []);
+
+  const chartConfig = {
+    data: chartData,
+    xField: 'date',
+    yField: 'sales',
+    point: {
+      size: 5,
+      shape: 'diamond',
+    },
+    label: {
+      style: {
+        fill: '#aaa',
+      },
+    },
+    smooth: true,
+    animation: {
+      appear: {
+        animation: 'path-in',
+        duration: 1000,
+      },
+    },
+    tooltip: {
+      showMarkers: false,
+      customContent: (title, items) => {
+        if (!items || items.length === 0 || !items[0] || !items[0].data) {
+          return '';
+        }
+
+        const salesValue = parseFloat(items[0].data.sales);
+
+        if (isNaN(salesValue) || salesValue <= 0) {
+          return '';
+        }
+
+        return `
+          <div style="padding: 5px; font-size: 14px;">
+            <div style="font-weight: bold; margin-bottom: 5px;">${title}</div>
+            <div style="display: flex; justify-content: space-between;">
+              <span>Profit:</span>
+              <span style="margin-left: 10px;">$${salesValue.toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+      },
+    },
+    height: 250,
+    padding: 'auto',
+    xAxis: {
+      label: {
+        autoHide: true,
+        autoRotate: false,
+        style: {
+          fontSize: 10,
+        },
+      },
+    },
+    yAxis: {
+      label: {
+        formatter: (v) => `$${v}`,
+      },
+    },
+    meta: {
+      date: {
+        range: [0, 1],
+      },
+    },
+  };
 
   return (
     <motion.div
@@ -89,14 +229,69 @@ const MobileDashboard = () => {
       transition={{ duration: 0.3 }}
     >
       <h2>Dashboard</h2>
-      <div className="dashboard-cards">
-        {cardData.map((card, idx) => (
+      
+      {/* Today's Financials */}
+      <h2 style={{ margin: '16px 0 8px 0', fontSize: '1.5rem' }}>Today Sales Overview</h2>
+      <div className="mobile-dashboard-cards">
+        {cardData.map((card, index) => (
           <motion.div
-            key={idx}
+            key={card.label}
+            className={`mobile-dashboard-card ${card.type}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+          >
+            <div className="card-icon">
+              <FontAwesomeIcon icon={card.icon} />
+            </div>
+            <div className="card-content">
+              <div className="card-label">{card.label}</div>
+              <div className="card-amount">
+                {loadingFinancials ? (
+                  <div className="loading-spinner" />
+                ) : (
+                  <CountUp end={card.amount} duration={1.2} separator="," />
+                )}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Last 30 Days' Financials */}
+      <h2 style={{ margin: '24px 0 8px 0', fontSize: '1.5rem' }}>Last 30 Days Sales Overview</h2>
+      <div className="dashboard-cards">
+        {[{
+          label: 'Total Work',
+          amount: last30DaysFinancials.totalSales,
+          icon: faClipboardList,
+          type: 'blue',
+        },
+        {
+          label: 'Income Amount',
+          amount: last30DaysFinancials.incomeAmount,
+          icon: faArrowUp,
+          type: 'dark',
+        },
+        {
+          label: 'Outgoing Amount',
+          amount: last30DaysFinancials.outgoingAmount,
+          icon: faArrowDown,
+          type: 'blue',
+        },
+        {
+          label: 'Profit',
+          amount: last30DaysFinancials.profit,
+          icon: faDollarSign,
+          type: last30DaysFinancials.profit >= 0 ? 'blue' : 'dark',
+        },
+        ].map((card, idx) => (
+          <motion.div
+            key={`last30-${idx}`}
             className={`dashboard-card ${card.type}`}
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: idx * 0.08 }}
+            transition={{ duration: 0.4, delay: idx * 0.08 + 0.15 }}
           >
             <div className="card-icon">
               <FontAwesomeIcon icon={card.icon} />
@@ -112,81 +307,25 @@ const MobileDashboard = () => {
           </motion.div>
         ))}
       </div>
-      {/* Line Chart Analysis Card */}
+
       <motion.div
         className="analysis-card analysis-card-line"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.3 }}
+        style={{ margin: '16px' }}
       >
-        <div className="analysis-title">Analysis</div>
+        <div className="analysis-title">Profit Overview (Last 30 Days)</div>
         <div className="analysis-line-chart">
-          {/* SVG Line Chart */}
-          <svg width="100%" height="100" viewBox="0 0 240 100" className="line-chart-svg">
-            {/* Sample data points */}
-            {(() => {
-              const data = [30, 22, 40, 60, 55, 48];
-              const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-              const max = Math.max(...data);
-              const min = Math.min(...data);
-              const points = data.map((v, i) => {
-                const x = 20 + i * 40;
-                const y = 80 - ((v - min) / (max - min || 1)) * 60;
-                return [x, y];
-              });
-              // Line path
-              const path = points.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(' ');
-              return (
-                <>
-                  {/* Vertical grid lines */}
-                  {points.map((p, i) => (
-                    <line key={i} x1={p[0]} y1={80} x2={p[0]} y2={p[1]} stroke="#eee" strokeWidth="1" />
-                  ))}
-                  {/* Line */}
-                  <path d={path} fill="none" stroke="#a084e8" strokeWidth="2" />
-                  {/* Dots */}
-                  {points.map((p, i) => (
-                    <circle key={i} cx={p[0]} cy={p[1]} r="5" fill="#fff" stroke="#222" strokeWidth="2" />
-                  ))}
-                  {/* Month labels */}
-                  {points.map((p, i) => (
-                    <text key={i} x={p[0]} y={95} textAnchor="middle" fontSize="12" fill="#888">{months[i]}</text>
-                  ))}
-                </>
-              );
-            })()}
-          </svg>
-        </div>
-      </motion.div>
-      {/* Device Traffic Bar Chart Card */}
-      <motion.div
-        className="device-traffic-card"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.5 }}
-      >
-        <div className="device-traffic-title">Device Traffic</div>
-        <div className="device-traffic-bar-chart">
-          {(() => {
-            const data = [80, 120, 110, 150, 243, 70];
-            const labels = ['Linux', 'Mac', 'iOS', 'Windows', 'Android', 'Other'];
-            const max = Math.max(...data);
-            return data.map((val, i) => {
-              const isMax = val === max;
-              return (
-                <div className="device-bar-group" key={labels[i]}>
-                  {isMax && (
-                    <div className="device-bar-amount-pill">{val}K</div>
-                  )}
-                  <div
-                    className={`device-bar${isMax ? ' highlight' : ''}`}
-                    style={{ height: `${40 + (val / max) * 60}px` }}
-                  ></div>
-                  <div className="device-bar-label">{labels[i]}</div>
-                </div>
-              );
-            });
-          })()}
+          {loadingChart ? (
+            <div style={{ textAlign: 'center', padding: '20px' }}>Loading chart data...</div>
+          ) : chartData.length > 0 ? (
+            <Line {...chartConfig} />
+          ) : (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              No profit data available for the last 30 days.
+            </div>
+          )}
         </div>
       </motion.div>
     </motion.div>
