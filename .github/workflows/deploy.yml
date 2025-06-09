@@ -25,6 +25,9 @@ jobs:
       - name: 🏗️ Build project
         run: npm run build
 
+      - name: 🔍 List build directory contents
+        run: ls -la build/
+
       - name: 🚀 Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
