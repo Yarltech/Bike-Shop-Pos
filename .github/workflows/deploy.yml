@@ -35,7 +35,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}  # should be: u242545993
           password: ${{ secrets.FTP_PASSWORD }}  # should be your FTP password
           server-dir: /public_html/              # your web root folder
-          folder: build/                         # Specify the folder to upload (your build output)
+          local-dir: build/                      # Specify the local folder to upload (your build output)
           protocol: ftp                          # explicitly set protocol to FTP
           dangerous-clean-slate: false           # don't delete existing files
           exclude: |
