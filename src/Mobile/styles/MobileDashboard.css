@@ -157,7 +157,6 @@
 .analysis-line-chart {
   width: 100%;
   min-width: 200px;
-  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -181,11 +180,7 @@
     margin-bottom: 10px;
   }
   .analysis-line-chart {
-    height: 70px;
     min-width: 120px;
-  }
-  .line-chart-svg {
-    height: 70px;
   }
 }
 
@@ -285,4 +280,19 @@
     padding: 1px 8px;
     top: -22px;
   }
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
