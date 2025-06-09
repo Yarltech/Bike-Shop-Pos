@@ -21,3 +21,12 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}  # should be: u242545993
           password: ${{ secrets.FTP_PASSWORD }}  # should be your FTP password
           server-dir: /public_html/              # your web root folder
+          protocol: ftp                          # explicitly set protocol to FTP
+          dangerous-clean-slate: false           # don't delete existing files
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/node_modules
+            .github/**
+            .github
