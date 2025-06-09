@@ -1,0 +1,23 @@
+name: 🚀 Deploy Website to Hostinger via FTP
+
+on:
+  push:
+    branches:
+      - master  # or main, depending on your default branch
+
+jobs:
+  ftp-deploy:
+    name: Zedx
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🚀 Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}        # should be: 195.35.62.117
+          username: ${{ secrets.FTP_USERNAME }}  # should be: u242545993
+          password: ${{ secrets.FTP_PASSWORD }}  # should be your FTP password
+          server-dir: /public_html/              # your web root folder
